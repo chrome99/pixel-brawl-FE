@@ -18,6 +18,12 @@
   animation: attackingAnimation_mage 1s steps(10) infinite;
 }
 
+.mage.jumping {
+  background-image: url('../../assets/mage/Jump.png');
+  width: 128px;
+  animation: jumpingAnimation_mage 1s steps(8) infinite;
+}
+
 @keyframes idleAnimation_mage {
     0% {
       background-position: 0px 0; /* Initial position of the sprite */
@@ -34,9 +40,19 @@
       background-position: 0px 0; /* Adjust to the width of your sprite sheet */
     }
 }
+
 @keyframes attackingAnimation_mage {
   0% {
     background-position: 1280px 0; /* Initial position of the sprite */
+  }
+  100% {
+    background-position: 0px 0; /* Adjust to the width of your sprite sheet */
+  }
+}
+
+@keyframes jumpingAnimation_mage {
+  0% {
+    background-position: 1024px 0; /* Initial position of the sprite */
   }
   100% {
     background-position: 0px 0; /* Adjust to the width of your sprite sheet */

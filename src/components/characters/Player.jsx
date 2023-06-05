@@ -3,18 +3,20 @@ import './Player.css';
 
 const allKeys = [
   {
-    up: "w",
-    down: "s",
-    left: "a",
-    right: "d",
-    attack: "z",
+    up: "KeyW",
+    down: "KeyS",
+    left: "KeyA",
+    right: "KeyD",
+    attack: "KeyZ",
+    jump: "KeyX"
   },
   {
     up: "ArrowUp",
     down: "ArrowDown",
     left: "ArrowLeft",
     right: "ArrowRight",
-    attack: "m"
+    attack: "KeyM",
+    jump: "Space"
   }
 ]
 
@@ -29,7 +31,8 @@ function Player({num, initPosition, initDirection, type}) {
 
   useEffect(() => {
     const handleKeyPress = (event) => {
-      switch (event.key) {
+      console.log(event.code, event.key)
+      switch (event.code) {
         case keys.up:
           if (position.top > border.top) {
             setAction("move");
@@ -71,6 +74,9 @@ function Player({num, initPosition, initDirection, type}) {
         case keys.attack:
           setAction("attack");
           break;
+        case keys.jump:
+          setAction("jump");
+          break;
         default:
           break;
       }
@@ -78,7 +84,7 @@ function Player({num, initPosition, initDirection, type}) {
 
 
     const handleKeyUp = (event) => {
-      switch (event.key) {
+      switch (event.code) {
         case keys.up:
         case keys.down:
         case keys.left:
@@ -109,9 +115,10 @@ function Player({num, initPosition, initDirection, type}) {
     }
     requestAnimationFrame(updatePosition);
   }, [velocity])
+  
   useEffect(() => {
     let timer;
-    if (action === "attack") {
+    if (action === "attack" || action === "jump") {
       timer = setTimeout(() => {
         setAction("idle")
       }, 1000)
@@ -125,6 +132,7 @@ function Player({num, initPosition, initDirection, type}) {
     ${type}
     ${action === "move" ? 'running' : ""}
     ${action === "attack" ? 'attacking' : ""}
+    ${action === "jump" ? 'jumping' : ""}
     `}
       style={{
         transform: `scaleX(${direction})`,

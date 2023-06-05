@@ -1,42 +1,58 @@
 .knight {
-    background-image: url('../../assets/knight/Idle.png');
-    background-position: 42px 0;
-    height: 86px;
-    width: 42px; 
-    animation: idleAnimation_knight 1s steps(4) infinite;
+  background-image: url("../../assets/knight/Idle.png");
+  background-position: 42px 0;
+  height: 86px;
+  width: 42px;
+  animation: idleAnimation_knight 1s steps(4) infinite;
 }
 
 .knight.running {
-    background-image: url('../../assets/knight/Run.png');
-    width: 100px;
-    animation: runningAnimation_knight 1s steps(7) infinite;
+  background-image: url("../../assets/knight/Run.png");
+  width: 100px;
+  animation: runningAnimation_knight 1s steps(7) infinite;
 }
+
 .knight.attacking {
-  background-image: url('../../assets/knight/Attack.png');
+  background-image: url("../../assets/knight/Attack.png");
   width: 132px;
-  animation: attackingAnimation_knight 1s steps(5) infinite;
+  animation: attackingAnimation_knight 0.8s steps(5) infinite;
+}
+
+.knight.jumping {
+  background-image: url("../../assets/knight/Jump.png");
+  width: 86px;
+  animation: jumpingAnimation_knight 1s steps(6) infinite;
 }
 
 @keyframes idleAnimation_knight {
-    0% {
-      background-position: 170px 0; /* Initial position of the sprite */
-    }
-    100% {
-      background-position: 0px 0; /* Adjust to the width of your sprite sheet */
-    }
+  0% {
+    background-position: 170px 0; /* Initial position of the sprite */
+  }
+  100% {
+    background-position: 0px 0; /* Adjust to the width of your sprite sheet */
+  }
 }
 @keyframes runningAnimation_knight {
-    0% {
-      background-position: 700px 0; /* Initial position of the sprite */
-    }
-    100% {
-      background-position: 0px 0; /* Adjust to the width of your sprite sheet */
-    }
+  0% {
+    background-position: 700px 0; /* Initial position of the sprite */
+  }
+  100% {
+    background-position: 0px 0; /* Adjust to the width of your sprite sheet */
+  }
 }
 
 @keyframes attackingAnimation_knight {
   0% {
     background-position: 660px 0; /* Initial position of the sprite */
+  }
+  100% {
+    background-position: 0px 0; /* Adjust to the width of your sprite sheet */
+  }
+}
+
+@keyframes jumpingAnimation_knight {
+  0% {
+    background-position: 480px 0; /* Initial position of the sprite */
   }
   100% {
     background-position: 0px 0; /* Adjust to the width of your sprite sheet */
