@@ -1,0 +1,44 @@
+.mage {
+    background-image: url('../../assets/mage/Idle.png');
+    scale: 2;
+    height: 128px;
+    width: 128px; 
+    animation: idleAnimation_mage 1s steps(7) infinite;
+}
+
+.mage.running {
+    background-image: url('../../assets/mage/Run.png');
+    width: 128px;
+    animation: runningAnimation_mage 1s steps(8) infinite;
+}
+
+.mage.attacking {
+  background-image: url('../../assets/mage/Attack_1.png');
+  width: 128px;
+  animation: attackingAnimation_mage 1s steps(10) infinite;
+}
+
+@keyframes idleAnimation_mage {
+    0% {
+      background-position: 0px 0; /* Initial position of the sprite */
+    }
+    100% {
+      background-position: 896px 0; /* Adjust to the width of your sprite sheet */
+    }
+}
+@keyframes runningAnimation_mage {
+    0% {
+      background-position: 1024px 0; /* Initial position of the sprite */
+    }
+    100% {
+      background-position: 0px 0; /* Adjust to the width of your sprite sheet */
+    }
+}
+@keyframes attackingAnimation_mage {
+  0% {
+    background-position: 1280px 0; /* Initial position of the sprite */
+  }
+  100% {
+    background-position: 0px 0; /* Adjust to the width of your sprite sheet */
+  }
+}

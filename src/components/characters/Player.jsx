@@ -18,7 +18,7 @@ const allKeys = [
   }
 ]
 
-function Player({num, initPosition, initDirection}) {
+function Player({num, initPosition, initDirection, type}) {
   const keys = allKeys[num]; 
   const [position, setPosition] = useState(initPosition);
   const [velocity, setVelocity] = useState({ x: 0, y: 0 });
@@ -122,8 +122,9 @@ function Player({num, initPosition, initDirection}) {
   return (
     <div
     className={`player
-    ${action === "move" && 'running'}
-    ${action === "attack" && 'attacking'}
+    ${type}
+    ${action === "move" ? 'running' : ""}
+    ${action === "attack" ? 'attacking' : ""}
     `}
       style={{
         transform: `scaleX(${direction})`,
