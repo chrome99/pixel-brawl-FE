@@ -1,0 +1,44 @@
+.player {
+    background-image: url('./assets/knight/Idle.png');
+    scale: 2;
+    position: 'absolute';
+    height: 86px;
+    width: 42px; 
+    position: absolute;
+    animation: idleAnimation 1s steps(4) infinite;
+}
+.running {
+    background-image: url('./assets/knight/Run.png');
+    width: 100px;
+    animation: runningAnimation 1s steps(7) infinite;
+}
+.attacking {
+  background-image: url('./assets/knight/Attack.png');
+  width: 132px;
+  animation: attackingAnimation 1s steps(5) infinite;
+}
+
+@keyframes idleAnimation {
+    0% {
+      background-position: 42px 0; /* Initial position of the sprite */
+    }
+    100% {
+      background-position: 215px 0; /* Adjust to the width of your sprite sheet */
+    }
+}
+@keyframes runningAnimation {
+    0% {
+      background-position: 100px 0; /* Initial position of the sprite */
+    }
+    100% {
+      background-position: 800px 0; /* Adjust to the width of your sprite sheet */
+    }
+}
+@keyframes attackingAnimation {
+  0% {
+    background-position: 132px 0; /* Initial position of the sprite */
+  }
+  100% {
+    background-position: 792px 0; /* Adjust to the width of your sprite sheet */
+  }
+}
