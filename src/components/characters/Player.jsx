@@ -1,11 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import './Player.css';
 
-function Player () {
-    
-  const [position, setPosition] = useState({ top: 275, left: 60 });
+const allKeys = [
+  {
+    up: "w",
+    down: "s",
+    left: "a",
+    right: "d",
+    attack: "z",
+  },
+  {
+    up: "ArrowUp",
+    down: "ArrowDown",
+    left: "ArrowLeft",
+    right: "ArrowRight",
+    attack: "m"
+  }
+]
+
+function Player({num, initPosition, initDirection}) {
+  const keys = allKeys[num]; 
+  const [position, setPosition] = useState(initPosition);
   const [velocity, setVelocity] = useState({ x: 0, y: 0 });
-  const [direction, setDirection] = useState(1);
+  const [direction, setDirection] = useState(initDirection);
   const [action, setAction] = useState("idle");
   const border = {top: 200, bottom: 400, right: 850, left: 50}
   const maxVelocity = 5;
@@ -13,7 +30,7 @@ function Player () {
   useEffect(() => {
     const handleKeyPress = (event) => {
       switch (event.key) {
-        case 'ArrowUp':
+        case keys.up:
           if (position.top > border.top) {
             setAction("move");
             setVelocity((prevVelocity) => ({
@@ -22,7 +39,7 @@ function Player () {
             }));
           }
           break;
-        case 'ArrowDown':
+        case keys.down:
           if (position.top < border.bottom) {
             setAction("move");
             setVelocity((prevVelocity) => ({
@@ -31,7 +48,7 @@ function Player () {
             }));
           }
           break;
-        case 'ArrowLeft':
+        case keys.left:
           if (position.left > border.left) {
             setAction("move");
             setDirection(-1);
@@ -41,7 +58,7 @@ function Player () {
             }));
           }
           break;
-        case 'ArrowRight':
+        case keys.right:
           if (position.left < border.right) {
             setAction("move");
             setDirection(1);
@@ -51,7 +68,7 @@ function Player () {
             }));
           }
           break;
-        case 'z':
+        case keys.attack:
           setAction("attack");
           break;
         default:
@@ -62,10 +79,10 @@ function Player () {
 
     const handleKeyUp = (event) => {
       switch (event.key) {
-        case 'ArrowUp':
-        case 'ArrowDown':
-        case 'ArrowLeft':
-        case 'ArrowRight':
+        case keys.up:
+        case keys.down:
+        case keys.left:
+        case keys.right:
           setVelocity({ x: 0, y: 0 });
           setAction("idle");
           break;
