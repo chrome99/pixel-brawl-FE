@@ -7,41 +7,49 @@ function Player () {
   const [velocity, setVelocity] = useState({ x: 0, y: 0 });
   const [direction, setDirection] = useState(1);
   const [action, setAction] = useState("idle");
-//   const border = {top: 300, bottom: 400, right: 900, left: 50}
+  const border = {top: 200, bottom: 400, right: 850, left: 50}
   const maxVelocity = 5;
 
   useEffect(() => {
     const handleKeyPress = (event) => {
       switch (event.key) {
         case 'ArrowUp':
-          setAction("move");
-          setVelocity((prevVelocity) => ({
-            ...prevVelocity,
-            y: Math.max(prevVelocity.y - 5, -maxVelocity),
-          }));
+          if (position.top > border.top) {
+            setAction("move");
+            setVelocity((prevVelocity) => ({
+              ...prevVelocity,
+              y: Math.max(prevVelocity.y - 5, -maxVelocity),
+            }));
+          }
           break;
         case 'ArrowDown':
-          setAction("move");
-          setVelocity((prevVelocity) => ({
-            ...prevVelocity,
-            y: Math.min(prevVelocity.y + 5, maxVelocity),
-          }));
+          if (position.top < border.bottom) {
+            setAction("move");
+            setVelocity((prevVelocity) => ({
+              ...prevVelocity,
+              y: Math.min(prevVelocity.y + 5, maxVelocity),
+            }));
+          }
           break;
         case 'ArrowLeft':
-          setAction("move");
-          setDirection(-1);
-          setVelocity((prevVelocity) => ({
-            ...prevVelocity,
-            x: Math.max(prevVelocity.x - 5, -maxVelocity),
-          }));
+          if (position.left > border.left) {
+            setAction("move");
+            setDirection(-1);
+            setVelocity((prevVelocity) => ({
+              ...prevVelocity,
+              x: Math.max(prevVelocity.x - 5, -maxVelocity),
+            }));
+          }
           break;
         case 'ArrowRight':
-          setAction("move");
-          setDirection(1);
-          setVelocity((prevVelocity) => ({
-            ...prevVelocity,
-            x: Math.min(prevVelocity.x + 5, maxVelocity),
-          }));
+          if (position.left < border.right) {
+            setAction("move");
+            setDirection(1);
+            setVelocity((prevVelocity) => ({
+              ...prevVelocity,
+              x: Math.min(prevVelocity.x + 5, maxVelocity),
+            }));
+          }
           break;
         case 'z':
           setAction("attack");
