@@ -24,6 +24,12 @@
   animation: jumpingAnimation_mage 1s steps(8) infinite;
 }
 
+.mage.hurting {
+  background-image: url('../../assets/mage/Hurt.png');
+  width: 128px;
+  animation: hurtingAnimation_mage 1s steps(3) infinite;
+}
+
 @keyframes idleAnimation_mage {
     0% {
       background-position: 0px 0; /* Initial position of the sprite */
@@ -53,6 +59,15 @@
 @keyframes jumpingAnimation_mage {
   0% {
     background-position: 1024px 0; /* Initial position of the sprite */
+  }
+  100% {
+    background-position: 0px 0; /* Adjust to the width of your sprite sheet */
+  }
+}
+
+@keyframes hurtingAnimation_mage {
+  0% {
+    background-position: 384px 0; /* Initial position of the sprite */
   }
   100% {
     background-position: 0px 0; /* Adjust to the width of your sprite sheet */

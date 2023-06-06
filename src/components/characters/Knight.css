@@ -24,6 +24,12 @@
   animation: jumpingAnimation_knight 1s steps(6) infinite;
 }
 
+.knight.hurting {
+  background-image: url("../../assets/knight/Hurt.png");
+  width: 60px;
+  animation: hurtingAnimation_knight 1s steps(2) infinite;
+}
+
 @keyframes idleAnimation_knight {
   0% {
     background-position: 170px 0; /* Initial position of the sprite */
@@ -53,6 +59,15 @@
 @keyframes jumpingAnimation_knight {
   0% {
     background-position: 480px 0; /* Initial position of the sprite */
+  }
+  100% {
+    background-position: 0px 0; /* Adjust to the width of your sprite sheet */
+  }
+}
+
+@keyframes hurtingAnimation_knight {
+  0% {
+    background-position: 120px 0; /* Initial position of the sprite */
   }
   100% {
     background-position: 0px 0; /* Adjust to the width of your sprite sheet */
