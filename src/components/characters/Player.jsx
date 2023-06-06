@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { gameSocket } from '../../socket';
 import './Player.css';
+import './Mage.css';
+import './Knight.css';
 
 const allKeys = [
   {
@@ -21,30 +23,27 @@ const allKeys = [
   }
 ]
 
-function Player({num, type, initPosition, initDirection, addCol, deleteCol, updateColPosition, playerStats, updateStats}) {
+function Player({num, type, position, direction, addCol, deleteCol, updateColPosition, playerStats, updateStats}) {
   const id = `player${num}`;
   const stats = playerStats.find((player) => player.id === id)
   const keys = allKeys[num];
-  const [position, setPosition] = useState(initPosition);
-  const [velocity, setVelocity] = useState({ x: 0, y: 0 });
-  const [direction, setDirection] = useState(initDirection);
   const border = {top: 200, bottom: 400, right: 850, left: 50}
   const maxVelocity = 5;
   const speed = 5;
 
   useEffect(()=> {
-    gameSocket.emit("position", {position, num, room: "room1"})
-    gameSocket.emit("velocity", {velocity, num, room: "room1"})
+    gameSocket.emit("position", {position: stats.position, num, room: "room1"})
+    gameSocket.emit("velocity", {velocity: stats.velocity, num, room: "room1"})
     gameSocket.emit("action", {action: stats.action, num, room: "room1"})
-    gameSocket.emit("direction", {direction, num, room: "room1"})
+    gameSocket.emit("direction", {direction: stats.direction, num, room: "room1"})
 
-  }, [position, velocity, stats.action, direction])
+  }, [stats.position, stats.velocity, stats.action, stats.direction])
   
   useEffect(() => {
     const handleKeyPress = (event) => {
       if (stats.action === "hurt" || stats.action === "attack") return;
       if (event.code === keys.up || event.code ===  keys.down || event.code === keys.left || event.code === keys.right) {
-        let newVelocity = {x: velocity.x, y: velocity.y};
+        let newVelocity = {x: stats.velocity.x, y: stats.velocity.y};
         let direction = undefined;
         if (event.code === keys.up) {
           if (position.top > border.top) {
@@ -88,8 +87,8 @@ function Player({num, type, initPosition, initDirection, addCol, deleteCol, upda
         if (newVelocity.y < -maxVelocity) {newVelocity.y = -maxVelocity}
 
         updateStats(id, "action", "move");
-        setVelocity((prevVelocity) => ({...prevVelocity, x: newVelocity.x, y: newVelocity.y}));
-        if (direction) {setDirection(direction)}
+        updateStats(id, "velocity", {x: newVelocity.x, y: newVelocity.y});
+        if (direction) {updateStats(id, "direction", direction)}
       }
       if (event.code === keys.attack) {
         let newLeft;
@@ -122,7 +121,7 @@ function Player({num, type, initPosition, initDirection, addCol, deleteCol, upda
         case keys.down:
         case keys.left:
         case keys.right:
-          setVelocity({ x: 0, y: 0 });
+          updateStats(id, "velocity", {x: 0, y: 0});
           updateStats(id, "action", "idle")
           break;
         default:
@@ -155,13 +154,13 @@ function Player({num, type, initPosition, initDirection, addCol, deleteCol, upda
 
   useEffect(() => {
     function updatePosition() {
-      setPosition((prevPosition) => ({
-        top: prevPosition.top + velocity.y,
-        left: prevPosition.left + velocity.x,
-      }));
+      updateStats(id, "position", {
+        top: stats.position.top + stats.velocity.y,
+        left: stats.position.left + stats.velocity.x,
+      });
     }
     requestAnimationFrame(updatePosition);
-  }, [velocity])
+  }, [stats.velocity])
 
   useEffect(() => {
     if (type === "knight") {

@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import Actor from "../components/Collision/Actor";
 import Attack from "../components/Collision/Attack";
-import Knight from '../components/characters/Knight';
-import Mage from '../components/characters/Mage';
 import { gameSocket } from '../socket';
+import Player from '../components/characters/Player';
 
 function GamePage() {
-  const [playerStats, setPlayerStats] = useState([{id: "player0", action: "idle", health: 100}, {id: "player1", action: "idle", health: 100}]);
+  const [playerStats, setPlayerStats] = useState([
+  {id: "player0", num: 0, type: "knight", action: "idle", health: 100, position: { top: 275, left: 60 }, velocity: { x: 0, y: 0 }, direction: 1},
+  {id: "player1", num: 1, type: "mage", action: "idle", health: 100, position: { top: 220, left: 760 }, velocity: { x: 0, y: 0 }, direction: -1}
+  ]);
   const [colObjects, setColObjects] = useState([]);
 
   function updateStats(statsId, field, newValue) {
@@ -79,17 +81,18 @@ function GamePage() {
 
 
   const knight = () => {
-    return <Knight num={0} initPosition={{ top: 275, left: 60 }} initDirection={1} addCol={addCol} deleteCol={deleteCol} updateColPosition={updateColPosition} playerStats={playerStats} updateStats={updateStats} />
+    return <Player type={'knight'} num={0} initPosition={{ top: 275, left: 60 }} initDirection={1} addCol={addCol} deleteCol={deleteCol} updateColPosition={updateColPosition} playerStats={playerStats} updateStats={updateStats} />
   }
   const mage = () => {
-    return <Mage num={1} initPosition={{ top: 220, left: 760 }} initDirection={-1} addCol={addCol} deleteCol={deleteCol} updateColPosition={updateColPosition} playerStats={playerStats} updateStats={updateStats} />
+    return <Player type={'mage'} num={1} initPosition={{ top: 220, left: 760 }} initDirection={-1} addCol={addCol} deleteCol={deleteCol} updateColPosition={updateColPosition} playerStats={playerStats} updateStats={updateStats} />
   }
   
 
   return (
     <div id="game">
-      <Knight num={0} initPosition={{ top: 275, left: 60 }} initDirection={1} addCol={addCol} deleteCol={deleteCol} updateColPosition={updateColPosition} playerStats={playerStats} updateStats={updateStats} />
-      <Mage num={1} initPosition={{ top: 220, left: 760 }} initDirection={-1} addCol={addCol} deleteCol={deleteCol} updateColPosition={updateColPosition} playerStats={playerStats} updateStats={updateStats} />
+      {playerStats.map((p) => {
+        return <Player type={p.type} num={p.num} position={p.position} direction={p.direction} addCol={addCol} deleteCol={deleteCol} updateColPosition={updateColPosition} playerStats={playerStats} updateStats={updateStats} />
+      })}
       {colObjects.map((col) => {
         switch (col.type) {
           case "actor":
@@ -97,7 +100,7 @@ function GamePage() {
           case "attack":
             return <Attack key={col.id} col={col} colObjects={colObjects} updateStats={updateStats} takeDamage={takeDamage}/>
           default:
-            break;
+            return "";
         }
       })}
     </div>
