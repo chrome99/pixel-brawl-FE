@@ -23,19 +23,20 @@ const allKeys = [
   }
 ]
 
-function Player({num, type, position, direction, addCol, deleteCol, updateColPosition, playerStats, updateStats}) {
-  const id = `player${num}`;
-  const stats = playerStats.find((player) => player.id === id)
-  const keys = allKeys[num];
-  const border = {top: 200, bottom: 400, right: 850, left: 50}
+function Player({stats, addCol, deleteCol, updateColPosition, updateStats}) {
+  const id = `player${stats.num}`;
+  const keys = allKeys[stats.num];
+  const borderKnight = {top: 200, bottom: 390, right: 850, left: 50}
+  const borderMage = {top: 155, bottom: 340, right: 850, left: 0}
+  const border = stats.type === "knight" ? borderKnight : borderMage;
   const maxVelocity = 5;
   const speed = 5;
 
   useEffect(()=> {
-    gameSocket.emit("position", {position: stats.position, num, room: "room1"})
-    gameSocket.emit("velocity", {velocity: stats.velocity, num, room: "room1"})
-    gameSocket.emit("action", {action: stats.action, num, room: "room1"})
-    gameSocket.emit("direction", {direction: stats.direction, num, room: "room1"})
+    gameSocket.emit("position", {position: stats.position, num: stats.num, room: "room1"})
+    gameSocket.emit("velocity", {velocity: stats.velocity, num: stats.num, room: "room1"})
+    gameSocket.emit("action", {action: stats.action, num: stats.num, room: "room1"})
+    gameSocket.emit("direction", {direction: stats.direction, num: stats.num, room: "room1"})
 
   }, [stats.position, stats.velocity, stats.action, stats.direction])
   
@@ -44,9 +45,9 @@ function Player({num, type, position, direction, addCol, deleteCol, updateColPos
       if (stats.action === "hurt" || stats.action === "attack") return;
       if (event.code === keys.up || event.code ===  keys.down || event.code === keys.left || event.code === keys.right) {
         let newVelocity = {x: stats.velocity.x, y: stats.velocity.y};
-        let direction = undefined;
+        let newDirection = undefined;
         if (event.code === keys.up) {
-          if (position.top > border.top) {
+          if (stats.position.top > border.top) {
             newVelocity.y -= speed;
           }
           else {
@@ -54,7 +55,7 @@ function Player({num, type, position, direction, addCol, deleteCol, updateColPos
           }
         }
         if (event.code === keys.down) {
-          if (position.top < border.bottom) {
+          if (stats.position.top < border.bottom) {
             newVelocity.y += speed;
           }
           else {
@@ -62,18 +63,18 @@ function Player({num, type, position, direction, addCol, deleteCol, updateColPos
           }
         }
         if (event.code === keys.left) {
-          if (position.left > border.left) {
+          if (stats.position.left > border.left) {
             newVelocity.x -= speed;
-            direction = -1;
+            newDirection = -1;
           }
           else {
             newVelocity.x = 0;
           }
         }
         if (event.code === keys.right) {
-          if (position.left < border.right) {
+          if (stats.position.left < border.right) {
             newVelocity.x += speed;
-            direction = 1;
+            newDirection = 1;
           }
           else {
             newVelocity.x = 0;
@@ -88,17 +89,17 @@ function Player({num, type, position, direction, addCol, deleteCol, updateColPos
 
         updateStats(id, "action", "move");
         updateStats(id, "velocity", {x: newVelocity.x, y: newVelocity.y});
-        if (direction) {updateStats(id, "direction", direction)}
+        if (newDirection) {updateStats(id, "direction", newDirection)}
       }
       if (event.code === keys.attack) {
         let newLeft;
-        if (type === "knight") {
-          newLeft = direction === 1 ? position.left + 50: position.left - 110;
-          updateColPosition(`${id}-attack1`, position.top + 110, newLeft);
+        if (stats.type === "knight") {
+          newLeft = stats.direction === 1 ? stats.position.left + 50: stats.position.left - 110;
+          updateColPosition(`${id}-attack1`, stats.position.top + 110, newLeft);
         }
-        else if (type === "mage") {
-          newLeft = direction === 1 ? position.left + 90: position.left - 70;
-        updateColPosition(`${id}-attack1`, position.top + 160, newLeft);
+        else if (stats.type === "mage") {
+          newLeft = stats.direction === 1 ? stats.position.left + 90: stats.position.left - 70;
+        updateColPosition(`${id}-attack1`, stats.position.top + 160, newLeft);
         }
         updateStats(id, "action", "attack");
         setTimeout(() => {
@@ -140,7 +141,7 @@ function Player({num, type, position, direction, addCol, deleteCol, updateColPos
 
   //initialize player
   useEffect(() => {
-    const otherPlayerNum = num === 1 ? 0 : 1;
+    const otherPlayerNum = stats.num === 1 ? 0 : 1;
     const actorCol = {top: 0, left: 0, width: 60, height: 50, id: id, type: "actor"};
     const attackCol = {top: 0, left: 0, width: 100, height: 30, id:`${id}-attack1`, type: "attack", target: `player${otherPlayerNum}`};
     addCol(actorCol);
@@ -163,28 +164,28 @@ function Player({num, type, position, direction, addCol, deleteCol, updateColPos
   }, [stats.velocity])
 
   useEffect(() => {
-    if (type === "knight") {
-      updateColPosition(`${id}`, position.top + 100, position.left - 10)
+    if (stats.type === "knight") {
+      updateColPosition(`${id}`, stats.position.top + 100, stats.position.left - 10)
     }
-    else if (type === "mage") {
-      updateColPosition(`${id}`, position.top + 150, position.left + 30)
+    else if (stats.type === "mage") {
+      updateColPosition(`${id}`, stats.position.top + 150, stats.position.left + 30)
     }
-  }, [position])
+  }, [stats.position])
 
   return (
     <div
     className={`player
-    ${type}
+    ${stats.type}
     ${stats.action === "move" ? 'running' : ""}
     ${stats.action === "attack" ? 'attacking' : ""}
     ${stats.action === "jump" ? 'jumping' : ""}
     ${stats.action === "hurt" ? 'hurting' : ""}
     `}
       style={{
-        transform: `scaleX(${direction})`,
-        top: position.top,
-        left: position.left,
-        zIndex: position.top,
+        transform: `scaleX(${stats.direction})`,
+        top: stats.position.top,
+        left: stats.position.left,
+        zIndex: stats.position.top,
       }}
     />
   );

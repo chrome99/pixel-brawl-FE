@@ -91,7 +91,8 @@ function GamePage() {
   return (
     <div id="game">
       {playerStats.map((p) => {
-        return <Player type={p.type} num={p.num} position={p.position} direction={p.direction} addCol={addCol} deleteCol={deleteCol} updateColPosition={updateColPosition} playerStats={playerStats} updateStats={updateStats} />
+        const stats = playerStats.find((player) => player.id === p.id);
+        return <Player stats={stats} updateStats={updateStats} addCol={addCol} deleteCol={deleteCol} updateColPosition={updateColPosition} />
       })}
       {colObjects.map((col) => {
         switch (col.type) {
