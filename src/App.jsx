@@ -1,14 +1,12 @@
 import React from 'react';
 import './App.css';
-import Knight from "./components/characters/Knight";
-import Mage from "./components/characters/Mage";
+import GamePage from './pages/GamePage';
+
 
 function App () {
+
   return (
-    <div id="game">
-      <Knight num={0} initPosition={{ top: 275, left: 60 }} initDirection={1} />
-      <Mage num={1} initPosition={{ top: 275, left: 760 }} initDirection={-1} />
-    </div>
+      <GamePage/>
   );
 };
 

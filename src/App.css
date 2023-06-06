@@ -1,7 +1,9 @@
 #game {
     background-image: url('./assets/background/background_2.png');
     background-size: cover;
-    width: 960px;
-    height: 540px;
+    width: 100%;
+   /* min-width: 960px;
+    max-width: 500px; */
+    height: 100%;
     position: relative;
 }
