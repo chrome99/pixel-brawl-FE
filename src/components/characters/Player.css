@@ -17,6 +17,9 @@
   width: 132px;
   animation: attackingAnimation 1s steps(5) infinite;
 }
+.hurting {
+  filter: invert(100%);
+}
 
 @keyframes idleAnimation {
     0% {

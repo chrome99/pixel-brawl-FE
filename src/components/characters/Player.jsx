@@ -18,61 +18,80 @@ const allKeys = [
   }
 ]
 
-function Player({num, initPosition, initDirection}) {
-  const keys = allKeys[num]; 
+function Player({num, initPosition, initDirection, addCol, deleteCol, updateColPosition, playerStats, updateStats}) {
+  const id = `player${num}`;
+  const stats = playerStats.find((player) => player.id === id)
+  const keys = allKeys[num];
   const [position, setPosition] = useState(initPosition);
   const [velocity, setVelocity] = useState({ x: 0, y: 0 });
   const [direction, setDirection] = useState(initDirection);
-  const [action, setAction] = useState("idle");
   const border = {top: 200, bottom: 400, right: 850, left: 50}
   const maxVelocity = 5;
-
+  const speed = 5;
+  
   useEffect(() => {
     const handleKeyPress = (event) => {
-      switch (event.key) {
-        case keys.up:
-          if (position.top > border.top) {
-            setAction("move");
-            setVelocity((prevVelocity) => ({
-              ...prevVelocity,
-              y: Math.max(prevVelocity.y - 5, -maxVelocity),
-            }));
+      if (stats.action === "hurt") return;
+      if (event.key === keys.up || event.key ===  keys.down || event.key === keys.left || event.key === keys.right) {
+        if (stats.action !== "attack") {
+          let newVelocity = {x: velocity.x, y: velocity.y};
+          let direction = undefined;
+          if (event.key === keys.up) {
+            if (position.top > border.top) {
+              newVelocity.y -= speed;
+            }
+            else {
+              newVelocity.y = 0;
+            }
           }
-          break;
-        case keys.down:
-          if (position.top < border.bottom) {
-            setAction("move");
-            setVelocity((prevVelocity) => ({
-              ...prevVelocity,
-              y: Math.min(prevVelocity.y + 5, maxVelocity),
-            }));
+          if (event.key === keys.down) {
+            if (position.top < border.bottom) {
+              newVelocity.y += speed;
+            }
+            else {
+              newVelocity.y = 0;
+            }
           }
-          break;
-        case keys.left:
-          if (position.left > border.left) {
-            setAction("move");
-            setDirection(-1);
-            setVelocity((prevVelocity) => ({
-              ...prevVelocity,
-              x: Math.max(prevVelocity.x - 5, -maxVelocity),
-            }));
+          if (event.key === keys.left) {
+            if (position.left > border.left) {
+              newVelocity.x -= speed;
+              direction = -1;
+            }
+            else {
+              newVelocity.x = 0;
+            }
           }
-          break;
-        case keys.right:
-          if (position.left < border.right) {
-            setAction("move");
-            setDirection(1);
-            setVelocity((prevVelocity) => ({
-              ...prevVelocity,
-              x: Math.min(prevVelocity.x + 5, maxVelocity),
-            }));
+          if (event.key === keys.right) {
+            if (position.left < border.right) {
+              newVelocity.x += speed;
+              direction = 1;
+            }
+            else {
+              newVelocity.x = 0;
+            }
           }
-          break;
-        case keys.attack:
-          setAction("attack");
-          break;
-        default:
-          break;
+
+
+          if (newVelocity.x > maxVelocity) {newVelocity.x = maxVelocity}
+          if (newVelocity.y > maxVelocity) {newVelocity.y = maxVelocity}
+          if (newVelocity.x < -maxVelocity) {newVelocity.x = -maxVelocity}
+          if (newVelocity.y < -maxVelocity) {newVelocity.y = -maxVelocity}
+
+          updateStats(id, "action", "move");
+          setVelocity((prevVelocity) => ({...prevVelocity, x: newVelocity.x, y: newVelocity.y}));
+          if (direction) {setDirection(direction)}
+        }
+      }
+      if (event.key === keys.attack) {
+        if (stats.action !== "attack") {
+          const newLeft = direction === 1 ? position.left + 50: position.left - 110;
+          updateColPosition(`${id}-attack1`, position.top + 110, newLeft);
+          updateStats(id, "action", "attack");
+          setTimeout(() => {
+            updateColPosition(`${id}-attack1`, 0, 0)
+            updateStats(id, "action", "idle")
+          }, 1000)
+        }
       }
     };
 
@@ -84,7 +103,7 @@ function Player({num, initPosition, initDirection}) {
         case keys.left:
         case keys.right:
           setVelocity({ x: 0, y: 0 });
-          setAction("idle");
+          updateStats(id, "action", "idle")
           break;
         default:
           break;
@@ -100,6 +119,20 @@ function Player({num, initPosition, initDirection}) {
     }
   });
 
+  //initialize player
+  useEffect(() => {
+    const otherPlayerNum = num === 1 ? 0 : 1;
+    const actorCol = {top: 0, left: 0, width: 60, height: 50, id: id, type: "actor"};
+    const attackCol = {top: 0, left: 0, width: 100, height: 30, id:`${id}-attack1`, type: "attack", target: `player${otherPlayerNum}`};
+    addCol(actorCol);
+    addCol(attackCol);
+
+    return () => {
+      deleteCol(id);
+      deleteCol(`${id}-attack1`);
+    }
+  }, [])
+
   useEffect(() => {
     function updatePosition() {
       setPosition((prevPosition) => ({
@@ -109,28 +142,25 @@ function Player({num, initPosition, initDirection}) {
     }
     requestAnimationFrame(updatePosition);
   }, [velocity])
+
   useEffect(() => {
-    let timer;
-    if (action === "attack") {
-      timer = setTimeout(() => {
-        setAction("idle")
-      }, 1000)
-    }
-    return () => clearTimeout(timer)
-  }, [action])
+    updateColPosition(`${id}`, position.top + 100, position.left - 10)
+  }, [position])
 
   return (
     <div
     className={`player
-    ${action === "move" && 'running'}
-    ${action === "attack" && 'attacking'}
+    ${stats.action === "move" && 'running'}
+    ${stats.action === "attack" && 'attacking'}
+    ${stats.action === "hurt" && 'hurting'}
     `}
       style={{
         transform: `scaleX(${direction})`,
         top: position.top,
         left: position.left,
+        zIndex: position.top,
       }}
-    ></div>
+    />
   );
 };
 

@@ -2,9 +2,9 @@ import React from 'react';
 import './Mage.css';
 import Player from './Player';
 
-function Mage ({num, initPosition, initDirection}) {
+function Mage ({num, initPosition, initDirection, addCol, deleteCol, updateColPosition, playerStats, updateStats, pressedKeys}) {
   return (
-      <Player num={num} initPosition={initPosition} initDirection={initDirection} />
+      <Player num={num} initPosition={initPosition} initDirection={initDirection} addCol={addCol} deleteCol={deleteCol} updateColPosition={updateColPosition} playerStats={playerStats} updateStats={updateStats} pressedKeys={pressedKeys} />
   );
 };
 

@@ -2,9 +2,9 @@ import React from 'react';
 import './Knight.css';
 import Player from './Player';
 
-function Knight ({num, initPosition, initDirection}) {
+function Knight ({num, initPosition, initDirection, addCol, deleteCol, updateColPosition, playerStats, updateStats, pressedKeys}) {
   return (
-      <Player num={num} initPosition={initPosition} initDirection={initDirection} />
+      <Player num={num} initPosition={initPosition} initDirection={initDirection} addCol={addCol} deleteCol={deleteCol} updateColPosition={updateColPosition} playerStats={playerStats} updateStats={updateStats} pressedKeys={pressedKeys} />
   );
 };
 
