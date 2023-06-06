@@ -1,9 +1,11 @@
 import { baseURL } from "./globalServices";
+import axios from "axios";
 
 const getUser = async () => {
   try {
     const { data } = await axios.get(`${baseURL}/user/verify`, { withCredentials: true });
     return data;
+    
   } catch (error) {
     console.error(error);
   }
@@ -14,7 +16,7 @@ const signup = async (user) => {
     const { data } = await axios.post(`${baseURL}/user/signup`, user);
     return data;
   } catch (err) {
-    console.log(err);
+    console.log(err, "FAIL TO SIGN UP");
   }
 };
 
