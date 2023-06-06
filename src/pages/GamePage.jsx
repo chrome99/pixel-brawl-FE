@@ -1,26 +1,59 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Actor from "../components/Collision/Actor";
 import Attack from "../components/Collision/Attack";
 import { gameSocket } from '../socket';
 import Player from '../components/characters/Player';
 import HealthBar from '../components/HealthBar';
+import { AuthContext } from '../contexts/AuthContext';
+// {id: user.id, type: "knight", action: "idle", health: 100, position: { top: 275, left: 60 }, velocity: { x: 0, y: 0 }, direction: 1}
+  // {id: "player1", num: 1, type: "mage", action: "idle", health: 100, position: { top: 220, left: 760 }, velocity: { x: 0, y: 0 }, direction: -1}
 
 function GamePage() {
-  const [playerStats, setPlayerStats] = useState([
-  {id: "player0", num: 0, type: "knight", action: "idle", health: 100, position: { top: 275, left: 60 }, velocity: { x: 0, y: 0 }, direction: 1},
-  {id: "player1", num: 1, type: "mage", action: "idle", health: 100, position: { top: 220, left: 760 }, velocity: { x: 0, y: 0 }, direction: -1}
-  ]);
+  const room = "hello";
+  const { user } = useContext(AuthContext)
+  const [playerStats, setPlayerStats] = useState([]);
   const [colObjects, setColObjects] = useState([]);
 
-  function updateStats(statsId, field, newValue) {
+  function updateStats(id, field, newValue) {
+    console.log("updateStats id: ", id);
+    gameSocket.emit("updatedPlayer", {player: {id, field, newValue}, room: room});
+  }
+
+  function onGetAllPlayer(data) {
+    const players = Object.values(data.players);
+    players.forEach((player) => {
+      console.log(player.num);
+      if (player.num === 0) {
+        player.position = { top: 275, left: 60 };
+      }
+      else {
+        player.position = {top: 220, left: 760};
+        player.direction = -1;
+        player.type = "mage";
+      }
+    })
+    setPlayerStats(players);
+  }
+
+  function onUpdatedPlayer(data) {
+    const { id, field, newValue } = data.player;
     setPlayerStats(prev => {
       const updatedStats = prev.map(stats => {
-        if (stats.id === statsId) {
+        if (stats.id === id) {
           return { ...stats, [field]: newValue};
         }
         return stats;
       });
 
+      return updatedStats;
+    });
+  }
+
+  function onRemovedPlayer(data) {
+    console.log("removing player")
+    const { playerId } = data;
+    setPlayerStats(prev => {
+      const updatedStats = prev.filter(stats => stats.id === playerId);
       return updatedStats;
     });
   }
@@ -59,26 +92,21 @@ function GamePage() {
     });
   };
     
-  useEffect(()=>{
+  useEffect(()=> {
+    if (!user || !user.id) return;
+
     gameSocket.connect() 
-    // gameSocket.emit("joinRoom", "room1")
-    gameSocket.on("getPosition", (position, opponent)=> {
-      
-      console.log(position, opponent)
-    })
-    gameSocket.on("getVelocity", (velocity, opponent)=> {
-      console.log(velocity, opponent)
-    })
-    gameSocket.on("getAction", (action, opponent)=> {
-      console.log(action, opponent)
-    })
-    gameSocket.on("getDirection", (direction, opponent)=> {
-      console.log(direction, opponent)
-    })
+
+    const player = {id: user.id, type: "knight", action: "idle", health: 100, position: { top: 275, left: 60 }, velocity: { x: 0, y: 0 }, direction: 1};
+    gameSocket.emit("joinRoom", room);
+    gameSocket.emit("getAllPlayers", {player: player, room: room});
+
+    gameSocket.on("getAllPlayers", onGetAllPlayer);
+    gameSocket.on("updatedPlayer", onUpdatedPlayer);
     return () => {
       gameSocket.disconnect();
     }
-  }, [])
+  }, [user])
 
 
   const knight = () => {
@@ -91,15 +119,15 @@ function GamePage() {
 
   return (
     <div id="game">
-      {playerStats.map((p, i) => {
+      {playerStats.length > 0 ? playerStats.map((p, i) => {
         const barPosition = i === 0 ? {top: 0, left: 0} : {top: 0, right: 0};
         const stats = playerStats.find((player) => player.id === p.id);
         return (<>
           <HealthBar key={stats.id + "-healthbar" + i} color={"red"} precentage={stats.health} position={barPosition}/>
-          <Player key={stats.id} stats={stats} updateStats={updateStats} addCol={addCol} deleteCol={deleteCol} updateColPosition={updateColPosition} />
+          <Player thisUser={stats.id === user.id} key={stats.id} stats={stats} updateStats={updateStats} addCol={addCol} deleteCol={deleteCol} updateColPosition={updateColPosition} />
         </>)
-      })}
-      {colObjects.map((col) => {
+      }): ""}
+      {/* {colObjects.map((col) => {
         switch (col.type) {
           case "actor":
             return <Actor key={col.id} col={col} colObjects={colObjects} updateStats={updateStats}/>
@@ -108,7 +136,7 @@ function GamePage() {
           default:
             return "";
         }
-      })}
+      })} */}
     </div>
   );
   

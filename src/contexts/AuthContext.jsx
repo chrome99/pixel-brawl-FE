@@ -10,7 +10,7 @@ const AuthContextProvider = ({ children }) => {
 
   const resetUser = (data) => {
     setUser({
-      _id: data._id,
+      id: data._id,
       role: data.role,
       username: data.username,
       email: data.email,

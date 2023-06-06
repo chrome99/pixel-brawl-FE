@@ -2,7 +2,7 @@
     position: absolute;
     /* height: 20px; */
     width: 45%;
-    background-color: #e0e0de;
+    background-color: #212f3c;
     border-radius: 50px;
     border: 2px dashed gold;
     margin: 1rem;
@@ -15,6 +15,6 @@
     padding: 0.2rem;
 }
 .healthBarLabel {
-    color: black;
+    color: white;
     font-weight: bold;
 }

@@ -23,22 +23,14 @@ const allKeys = [
   }
 ]
 
-function Player({stats, addCol, deleteCol, updateColPosition, updateStats}) {
-  const id = `player${stats.num}`;
-  const keys = allKeys[stats.num];
+function Player({stats, thisUser, addCol, deleteCol, updateColPosition, updateStats}) {
+  const id = stats.id;
+  const keys = allKeys[0];
   const borderKnight = {top: 200, bottom: 390, right: 850, left: 50}
   const borderMage = {top: 155, bottom: 340, right: 850, left: 0}
   const border = stats.type === "knight" ? borderKnight : borderMage;
   const maxVelocity = 5;
   const speed = 5;
-
-  useEffect(()=> {
-    gameSocket.emit("position", {position: stats.position, num: stats.num, room: "room1"})
-    gameSocket.emit("velocity", {velocity: stats.velocity, num: stats.num, room: "room1"})
-    gameSocket.emit("action", {action: stats.action, num: stats.num, room: "room1"})
-    gameSocket.emit("direction", {direction: stats.direction, num: stats.num, room: "room1"})
-
-  }, [stats.position, stats.velocity, stats.action, stats.direction])
   
   useEffect(() => {
     const handleKeyPress = (event) => {
@@ -130,8 +122,10 @@ function Player({stats, addCol, deleteCol, updateColPosition, updateStats}) {
       }
     };
 
-    document.addEventListener('keydown', handleKeyPress);
-    document.addEventListener('keyup', handleKeyUp);
+    if (thisUser) {
+      document.addEventListener('keydown', handleKeyPress);
+      document.addEventListener('keyup', handleKeyUp);
+    }
 
     return () => {
       document.removeEventListener('keydown', handleKeyPress);
