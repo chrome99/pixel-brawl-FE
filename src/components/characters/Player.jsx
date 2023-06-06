@@ -3,22 +3,24 @@ import './Player.css';
 
 const allKeys = [
   {
-    up: "w",
-    down: "s",
-    left: "a",
-    right: "d",
-    attack: "z",
+    up: "KeyW",
+    down: "KeyS",
+    left: "KeyA",
+    right: "KeyD",
+    attack: "KeyZ",
+    jump: "KeyX"
   },
   {
     up: "ArrowUp",
     down: "ArrowDown",
     left: "ArrowLeft",
     right: "ArrowRight",
-    attack: "m"
+    attack: "KeyM",
+    jump: "Space"
   }
 ]
 
-function Player({num, initPosition, initDirection, addCol, deleteCol, updateColPosition, playerStats, updateStats}) {
+function Player({num, type, initPosition, initDirection, addCol, deleteCol, updateColPosition, playerStats, updateStats}) {
   const id = `player${num}`;
   const stats = playerStats.find((player) => player.id === id)
   const keys = allKeys[num];
@@ -31,73 +33,82 @@ function Player({num, initPosition, initDirection, addCol, deleteCol, updateColP
   
   useEffect(() => {
     const handleKeyPress = (event) => {
-      if (stats.action === "hurt") return;
-      if (event.key === keys.up || event.key ===  keys.down || event.key === keys.left || event.key === keys.right) {
-        if (stats.action !== "attack") {
-          let newVelocity = {x: velocity.x, y: velocity.y};
-          let direction = undefined;
-          if (event.key === keys.up) {
-            if (position.top > border.top) {
-              newVelocity.y -= speed;
-            }
-            else {
-              newVelocity.y = 0;
-            }
+      if (stats.action === "hurt" || stats.action === "attack") return;
+      if (event.code === keys.up || event.code ===  keys.down || event.code === keys.left || event.code === keys.right) {
+        let newVelocity = {x: velocity.x, y: velocity.y};
+        let direction = undefined;
+        if (event.code === keys.up) {
+          if (position.top > border.top) {
+            newVelocity.y -= speed;
           }
-          if (event.key === keys.down) {
-            if (position.top < border.bottom) {
-              newVelocity.y += speed;
-            }
-            else {
-              newVelocity.y = 0;
-            }
+          else {
+            newVelocity.y = 0;
           }
-          if (event.key === keys.left) {
-            if (position.left > border.left) {
-              newVelocity.x -= speed;
-              direction = -1;
-            }
-            else {
-              newVelocity.x = 0;
-            }
-          }
-          if (event.key === keys.right) {
-            if (position.left < border.right) {
-              newVelocity.x += speed;
-              direction = 1;
-            }
-            else {
-              newVelocity.x = 0;
-            }
-          }
-
-
-          if (newVelocity.x > maxVelocity) {newVelocity.x = maxVelocity}
-          if (newVelocity.y > maxVelocity) {newVelocity.y = maxVelocity}
-          if (newVelocity.x < -maxVelocity) {newVelocity.x = -maxVelocity}
-          if (newVelocity.y < -maxVelocity) {newVelocity.y = -maxVelocity}
-
-          updateStats(id, "action", "move");
-          setVelocity((prevVelocity) => ({...prevVelocity, x: newVelocity.x, y: newVelocity.y}));
-          if (direction) {setDirection(direction)}
         }
+        if (event.code === keys.down) {
+          if (position.top < border.bottom) {
+            newVelocity.y += speed;
+          }
+          else {
+            newVelocity.y = 0;
+          }
+        }
+        if (event.code === keys.left) {
+          if (position.left > border.left) {
+            newVelocity.x -= speed;
+            direction = -1;
+          }
+          else {
+            newVelocity.x = 0;
+          }
+        }
+        if (event.code === keys.right) {
+          if (position.left < border.right) {
+            newVelocity.x += speed;
+            direction = 1;
+          }
+          else {
+            newVelocity.x = 0;
+          }
+        }
+
+
+        if (newVelocity.x > maxVelocity) {newVelocity.x = maxVelocity}
+        if (newVelocity.y > maxVelocity) {newVelocity.y = maxVelocity}
+        if (newVelocity.x < -maxVelocity) {newVelocity.x = -maxVelocity}
+        if (newVelocity.y < -maxVelocity) {newVelocity.y = -maxVelocity}
+
+        updateStats(id, "action", "move");
+        setVelocity((prevVelocity) => ({...prevVelocity, x: newVelocity.x, y: newVelocity.y}));
+        if (direction) {setDirection(direction)}
       }
-      if (event.key === keys.attack) {
-        if (stats.action !== "attack") {
-          const newLeft = direction === 1 ? position.left + 50: position.left - 110;
+      if (event.code === keys.attack) {
+        let newLeft;
+        if (type === "knight") {
+          newLeft = direction === 1 ? position.left + 50: position.left - 110;
           updateColPosition(`${id}-attack1`, position.top + 110, newLeft);
-          updateStats(id, "action", "attack");
-          setTimeout(() => {
-            updateColPosition(`${id}-attack1`, 0, 0)
-            updateStats(id, "action", "idle")
-          }, 1000)
         }
+        else if (type === "mage") {
+          newLeft = direction === 1 ? position.left + 90: position.left - 70;
+        updateColPosition(`${id}-attack1`, position.top + 160, newLeft);
+        }
+        updateStats(id, "action", "attack");
+        setTimeout(() => {
+          updateColPosition(`${id}-attack1`, 0, 0)
+          updateStats(id, "action", "idle")
+        }, 1000)
+      }
+      if (event.code === keys.jump) {
+        updateStats(id, "action", "jump");
+        setTimeout(() => {
+          updateStats(id, "action", "idle")
+        }, 1000)
       }
     };
 
 
     const handleKeyUp = (event) => {
-      switch (event.key) {
+      switch (event.code) {
         case keys.up:
         case keys.down:
         case keys.left:
@@ -144,15 +155,22 @@ function Player({num, initPosition, initDirection, addCol, deleteCol, updateColP
   }, [velocity])
 
   useEffect(() => {
-    updateColPosition(`${id}`, position.top + 100, position.left - 10)
+    if (type === "knight") {
+      updateColPosition(`${id}`, position.top + 100, position.left - 10)
+    }
+    else if (type === "mage") {
+      updateColPosition(`${id}`, position.top + 150, position.left + 30)
+    }
   }, [position])
 
   return (
     <div
     className={`player
-    ${stats.action === "move" && 'running'}
-    ${stats.action === "attack" && 'attacking'}
-    ${stats.action === "hurt" && 'hurting'}
+    ${type}
+    ${stats.action === "move" ? 'running' : ""}
+    ${stats.action === "attack" ? 'attacking' : ""}
+    ${stats.action === "jump" ? 'jumping' : ""}
+    ${stats.action === "hurt" ? 'hurting' : ""}
     `}
       style={{
         transform: `scaleX(${direction})`,
