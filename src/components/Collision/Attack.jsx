@@ -8,8 +8,11 @@ function Attack({col, colObjects, updateStats, takeDamage}) {
     const targetCol = colObjects.find((obj) => obj.id === col.target);
     const result = colOverlap(col, targetCol);
     if (result) {
+      const max = 30, min = 10;
+      const randomDamge = Math.floor(Math.random() * (max - min + 1) + min);
+
       updateStats(col.target, "action", "hurt");
-      takeDamage(col.target, 5)
+      takeDamage(col.target, randomDamge)
       setTimeout(() => {
         updateStats(col.target, "action", "idle");
       }, 1000)

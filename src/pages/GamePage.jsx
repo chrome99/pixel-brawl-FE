@@ -3,6 +3,7 @@ import Actor from "../components/Collision/Actor";
 import Attack from "../components/Collision/Attack";
 import { gameSocket } from '../socket';
 import Player from '../components/characters/Player';
+import HealthBar from '../components/HealthBar';
 
 function GamePage() {
   const [playerStats, setPlayerStats] = useState([
@@ -90,9 +91,13 @@ function GamePage() {
 
   return (
     <div id="game">
-      {playerStats.map((p) => {
+      {playerStats.map((p, i) => {
+        const barPosition = i === 0 ? {top: 0, left: 0} : {top: 0, right: 0};
         const stats = playerStats.find((player) => player.id === p.id);
-        return <Player stats={stats} updateStats={updateStats} addCol={addCol} deleteCol={deleteCol} updateColPosition={updateColPosition} />
+        return (<>
+          <HealthBar key={stats.id + "-healthbar" + i} color={"red"} precentage={stats.health} position={barPosition}/>
+          <Player key={stats.id} stats={stats} updateStats={updateStats} addCol={addCol} deleteCol={deleteCol} updateColPosition={updateColPosition} />
+        </>)
       })}
       {colObjects.map((col) => {
         switch (col.type) {

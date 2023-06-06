@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { gameSocket } from '../../socket';
 import './Player.css';
 import './Mage.css';
@@ -103,7 +103,7 @@ function Player({stats, addCol, deleteCol, updateColPosition, updateStats}) {
         }
         updateStats(id, "action", "attack");
         setTimeout(() => {
-          updateColPosition(`${id}-attack1`, 0, 0)
+          updateColPosition(`${id}-attack1`, -100, -100)
           updateStats(id, "action", "idle")
         }, 1000)
       }
@@ -142,8 +142,8 @@ function Player({stats, addCol, deleteCol, updateColPosition, updateStats}) {
   //initialize player
   useEffect(() => {
     const otherPlayerNum = stats.num === 1 ? 0 : 1;
-    const actorCol = {top: 0, left: 0, width: 60, height: 50, id: id, type: "actor"};
-    const attackCol = {top: 0, left: 0, width: 100, height: 30, id:`${id}-attack1`, type: "attack", target: `player${otherPlayerNum}`};
+    const actorCol = {top: -100, left: -100, width: 60, height: 50, id: id, type: "actor"};
+    const attackCol = {top: -100, left: -100, width: 100, height: 30, id:`${id}-attack1`, type: "attack", target: `player${otherPlayerNum}`};
     addCol(actorCol);
     addCol(attackCol);
 

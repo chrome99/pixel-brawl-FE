@@ -1,0 +1,20 @@
+.healthBarContainer {
+    position: absolute;
+    /* height: 20px; */
+    width: 45%;
+    background-color: #e0e0de;
+    border-radius: 50px;
+    border: 2px dashed gold;
+    margin: 1rem;
+}
+.healthBarFiller {
+    height: 100%;
+    border-radius: 1rem;
+    text-align: center;
+    transition: width 0.5s ease-in-out;
+    padding: 0.2rem;
+}
+.healthBarLabel {
+    color: black;
+    font-weight: bold;
+}
