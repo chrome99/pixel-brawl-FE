@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { gameSocket } from '../../socket';
 import './Player.css';
 
 const allKeys = [
@@ -30,6 +31,14 @@ function Player({num, type, initPosition, initDirection, addCol, deleteCol, upda
   const border = {top: 200, bottom: 400, right: 850, left: 50}
   const maxVelocity = 5;
   const speed = 5;
+
+  useEffect(()=> {
+    gameSocket.emit("position", {position, num, room: "room1"})
+    gameSocket.emit("velocity", {velocity, num, room: "room1"})
+    gameSocket.emit("action", {action: stats.action, num, room: "room1"})
+    gameSocket.emit("direction", {direction, num, room: "room1"})
+
+  }, [position, velocity, stats.action, direction])
   
   useEffect(() => {
     const handleKeyPress = (event) => {
