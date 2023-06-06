@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
 import "../App.css"; 
-import axios from "axios";
+
 
 
 const Signup = () => {
@@ -36,7 +36,7 @@ const Signup = () => {
          rePassword
        });
 
-       navigate("/");
+       navigate("/login");
      } catch (err) {
        console.log(err);
      }
