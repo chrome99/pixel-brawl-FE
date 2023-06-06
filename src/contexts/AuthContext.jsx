@@ -3,7 +3,7 @@ import * as userServices from "../services/userServices";
 
 const AuthContext = createContext(null);
 
-function AuthContextProvider({ children }) {
+const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -35,13 +35,13 @@ function AuthContextProvider({ children }) {
     try {
       setIsLoading(true);
       const newUser = await userServices.signup(user);
-      resetUser(newUser)
-      setIsLoggedIn(true)
+      resetUser(newUser);
+      setIsLoggedIn(true);
       setIsLoading(false);
     } catch (err) {
       console.log(err);
     }
-  };
+  }; 
 
   const login = async (user) => {
     try {
@@ -57,9 +57,9 @@ function AuthContextProvider({ children }) {
 
   const logout = async () => {
     try {
-      isLoading(true);
+      setIsLoading(true);
       await userServices.logout();
-      isLoading(false);
+      setIsLoading(false);
       setIsLoggedIn(false);
       setUser(null);
     } catch (err) {
@@ -72,7 +72,6 @@ function AuthContextProvider({ children }) {
       {children}
     </AuthContext.Provider>
   );
-}
+};
 
-export default AuthContext;
-export { AuthContextProvider };
+export { AuthContext, AuthContextProvider };
