@@ -13,7 +13,7 @@ const getUser = async () => {
 
 const signup = async (user) => {
   try {
-    const { data } = await axios.post(`${baseURL}/user/signup`, user);
+    const { data } = await axios.post(`${baseURL}/user/signup`, user, {withCredentials: true});
     return data;
   } catch (err) {
     console.log(err, "FAIL TO SIGN UP");
@@ -22,7 +22,7 @@ const signup = async (user) => {
 
 const login = async (userData) => {
   try {
-    const { data } = await axios.post(`${baseURL}/user/login`, userData);
+    const { data } = await axios.post(`${baseURL}/user/login`, userData, {withCredentials: true});
     return data;
   } catch (err) {
     console.log(err);
