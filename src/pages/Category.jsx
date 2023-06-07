@@ -44,7 +44,6 @@ const Category = () => {
                 : "My Scores"}
             </h3>
           </header>
-          
           <TableRow index={""} player1={"player1"} player2={"player2"} score={"score"}/>
           <div>
           {scores. map((s, index) => <TableRow index={index+1} player1={s.player1} player2={s.player2} score={`${s.player1Score}/${s.player2Score}`}/>)}
