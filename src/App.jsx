@@ -6,21 +6,25 @@ import Signup from './pages/Signup';
 import Login from './pages/Login';
 import { AuthContextProvider } from './contexts/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
+import Navbar from './components/Navbar';
+import Character from './pages/Character';
+import Scores from './pages/Scores';
 
 
 function App () {
   return (
-    <>
       <AuthContextProvider>
         <Routes>
           <Route path="/" element={<PrivateRoute />}>
-            <Route path="/" element={<GamePage />} />
+          <Route index path="/" element={<GamePage />} />
+          <Route path="/character" element={<Character />} /> 
+          <Route path="/scores" element={<Scores />} /> 
           </Route>
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
-        </Routes>       
+        </Routes>
       </AuthContextProvider>
-    </>
+
   );
 };
 
