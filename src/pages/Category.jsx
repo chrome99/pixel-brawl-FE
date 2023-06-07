@@ -59,16 +59,30 @@ const Category = () => {
         <div id="matches">
           <header>
             <h3 className="pageHeader">
-              {params.categoryName === "scores"
-                ? "Scores"
-                : "My Scores"}
+              {params.categoryName === "scores" ? "Scores" : "My Scores"}
             </h3>
           </header>
-          <TableRow index={""} player1={"player1"} player2={"player2"} score={"score"}/>
-          <div className='tableBody'>
-          {scores. map((s, index) => <TableRow index={index+1} player1={s.player1} player2={s.player2} score={`${s.player1Score}/${s.player2Score}`}/>)}
+          <div className="tableHeadline">
+            <TableRow
+            index={""}
+            player1={"player1"}
+            player2={"player2"}
+            score={"score"}
+          />
           </div>
-          {params.categoryName === "user-scores" && <p className='userScore'>{`Total Score: ${scoreSum}`}</p>}
+          <div className="tableBody">
+            {scores.map((s, index) => (
+              <TableRow
+                index={index + 1}
+                player1={s.player1}
+                player2={s.player2}
+                score={`${s.player1Score}/${s.player2Score}`}
+              />
+            ))}
+          </div>
+          {params.categoryName === "user-scores" && (
+            <p className="userScore">{`Total Score: ${scoreSum}`}</p>
+          )}
         </div>
       </div>
     </div>

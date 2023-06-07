@@ -3,8 +3,7 @@
     grid-template-columns: repeat(5, 1fr);;
     padding: 0.6rem 0;
     border-top: 1px solid #fff;
-    border-bottom: 1px solid #fff;
-    margin-top: 1.2rem;
+    border-bottom: 1px solid #fff;    
 }
 
 .tableRow p {
