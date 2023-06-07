@@ -30,16 +30,6 @@ function GamePage() {
     gameSocket.emit("updatedPlayer", {player: {id, field, newValue}, room: room});
   }
 
-  /*
-  todo:
-  add 2nd attack
-  integrate death animation
-  integrate character choice
-  after match won, setTimeout to navigate back to Character Choice
-
-  super extra: add local server
-  */
-
   function onGetAllPlayer(data) {
     const players = Object.values(data.players);
     players.forEach((player) => {
@@ -137,9 +127,9 @@ function GamePage() {
 
   useEffect(() => {
     if (matchWinner === "") return;
-    
+
     setTimeout(() => {
-      navigate("/character");
+      // navigate("/character");
     }, 5000);
   }, [matchWinner])
 

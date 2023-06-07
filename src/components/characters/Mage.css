@@ -18,7 +18,7 @@
   animation: attackingAnimation_mage 1s steps(10) infinite;
 }
 
-.mage.attacking_02 {
+.mage.attacking2 {
   background-image: url('../../assets/mage/Attack_2.png');
   width: 128px;
   animation: attacking_02Animation_mage 1s steps(12) infinite;
@@ -39,7 +39,7 @@
 .mage.dying {
   background-image: url('../../assets/mage/Dead.png');
   width: 128px;
-  animation: dyingAnimation_mage 5s steps(5);
+  animation: dyingAnimation_mage 2s steps(5) infinite;
 }
 
 @keyframes idleAnimation_mage {
@@ -73,7 +73,7 @@
     background-position: 1664px 0; /* Initial position of the sprite */
   }
   100% {
-    background-position: 0px 0; /* Adjust to the width of your sprite sheet */
+    background-position: 128px 0; /* Adjust to the width of your sprite sheet */
   }
 }
 
@@ -99,13 +99,7 @@
   0% {
     background-position: 640px 0; /* Initial position of the sprite */
   }
-  40% {
-    background-position: 0px 0; /* Adjust to the width of your sprite sheet */
-  }
-  60% {
-    background-position: 0px 0; /* Adjust to the width of your sprite sheet */
-  }
   100% {
-    background-position: 640px 0; /* Adjust to the width of your sprite sheet */
+    background-position: 0px 0; /* Adjust to the width of your sprite sheet */
   }
 }

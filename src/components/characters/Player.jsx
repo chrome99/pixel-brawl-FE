@@ -3,28 +3,18 @@ import './Player.css';
 import './Mage.css';
 import './Knight.css';
 
-const allKeys = [
-  {
-    up: "KeyW",
-    down: "KeyS",
-    left: "KeyA",
-    right: "KeyD",
-    attack: "KeyZ",
-    jump: "KeyX"
-  },
-  {
+const keys = {
     up: "ArrowUp",
     down: "ArrowDown",
     left: "ArrowLeft",
     right: "ArrowRight",
-    attack: "KeyM",
+    attack: "KeyZ",
+    attack2: "KeyX",
     jump: "Space"
-  }
-]
+}
 
 function Player({stats, thisUser, matchWinner, otherPlayer, addCol, deleteCol, updateCol, updateStats}) {
   const id = stats.id;
-  const keys = allKeys[0];
   const borderKnight = {top: 200, bottom: 390, right: 850, left: 50}
   const borderMage = {top: 155, bottom: 340, right: 850, left: 0}
   const border = stats.type === "knight" ? borderKnight : borderMage;
@@ -33,7 +23,7 @@ function Player({stats, thisUser, matchWinner, otherPlayer, addCol, deleteCol, u
   
   useEffect(() => {
     const handleKeyPress = (event) => {
-      if (stats.action === "hurt" || stats.action === "attack") return;
+      if (!(stats.action === "idle"  || stats.action === "move")) return;
       if (event.code === keys.up || event.code ===  keys.down || event.code === keys.left || event.code === keys.right) {
         let newVelocity = {x: stats.velocity.x, y: stats.velocity.y};
         let newDirection = undefined;
@@ -98,6 +88,22 @@ function Player({stats, thisUser, matchWinner, otherPlayer, addCol, deleteCol, u
           updateStats(id, "action", "idle")
         }, 1000)
       }
+      if (event.code === keys.attack2) {
+        let newLeft;
+        if (stats.type === "knight") {
+          newLeft = stats.direction === 1 ? stats.position.left + 50: stats.position.left - 110;
+          updateCol(`${id}-attack2`, stats.position.top + 110, newLeft);
+        }
+        else if (stats.type === "mage") {
+          newLeft = stats.direction === 1 ? stats.position.left + 90: stats.position.left - 70;
+        updateCol(`${id}-attack2`, stats.position.top + 160, newLeft);
+        }
+        updateStats(id, "action", "attack2");
+        setTimeout(() => {
+          updateCol(`${id}-attack2`, -100, -200)
+          updateStats(id, "action", "idle")
+        }, 1000)
+      }
       if (event.code === keys.jump) {
         updateStats(id, "action", "jump");
         setTimeout(() => {
@@ -138,12 +144,15 @@ function Player({stats, thisUser, matchWinner, otherPlayer, addCol, deleteCol, u
 
     const actorCol = {top: -100, left: -100, width: 60, height: 50, id: `${id}-col`, type: "actor"};
     const attackCol = {top: -100, left: -200, width: 100, height: 30, id:`${id}-attack1`, type: "attack", target: `${otherPlayer}-col`};
+    const attack2Col = {top: -100, left: -200, width: 100, height: 30, id:`${id}-attack2`, type: "attack", target: `${otherPlayer}-col`};
     addCol(actorCol);
     addCol(attackCol);
+    addCol(attack2Col);
 
     return () => {
       deleteCol(`${id}-col`);
       deleteCol(`${id}-attack1`);
+      deleteCol(`${id}-attack2`);
     }
   }, [otherPlayer])
 
@@ -172,6 +181,7 @@ function Player({stats, thisUser, matchWinner, otherPlayer, addCol, deleteCol, u
     ${stats.type}
     ${stats.action === "move" ? 'running' : ""}
     ${stats.action === "attack" ? 'attacking' : ""}
+    ${stats.action === "attack2" ? 'attacking2' : ""}
     ${stats.action === "jump" ? 'jumping' : ""}
     ${stats.action === "hurt" ? 'hurting' : ""}
     ${stats.action === "dying" ? 'dying' : ""}

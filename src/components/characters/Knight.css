@@ -18,7 +18,7 @@
   animation: attackingAnimation_knight 0.8s steps(5) infinite;
 }
 
-.knight.attacking_02 {
+.knight.attacking2 {
   background-image: url("../../assets/knight/Attack_2.png");
   width: 100px;
   animation: attacking_02Animation_knight 0.8s steps(4) infinite;
@@ -39,7 +39,7 @@
 .knight.dying {
   background-image: url("../../assets/knight/Dead.png");
   width: 100px;
-  animation: dyingAnimation_knight 1s steps(6) infinite;
+  animation: dyingAnimation_knight 2s steps(6) infinite;
 }
 
 @keyframes idleAnimation_knight {
