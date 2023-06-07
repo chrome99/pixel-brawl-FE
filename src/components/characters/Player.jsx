@@ -18,8 +18,8 @@ function Player({stats, thisUser, matchWinner, otherPlayer, addCol, deleteCol, u
   const borderKnight = {top: 200, bottom: 390, right: 850, left: 50}
   const borderMage = {top: 155, bottom: 340, right: 850, left: 0}
   const border = stats.type === "knight" ? borderKnight : borderMage;
-  const maxVelocity = 5;
-  const speed = 5;
+  const maxVelocity = 8;
+  const speed = 8;
   
   useEffect(() => {
     const handleKeyPress = (event) => {

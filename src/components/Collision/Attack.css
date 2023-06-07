@@ -1,11 +1,6 @@
 .col.attack {
-    background-color: red;
-    opacity: 0.5;
     position: absolute;
 }
 .col.attack.projected {
-    background-color: indigo;
-    border-radius: 1rem;
-    opacity: 0.5;
     position: absolute;
 }
