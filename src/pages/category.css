@@ -7,6 +7,10 @@
   flex-direction: column;
 }
 
+#matches .pageHeader {
+  margin-bottom: 1.5rem;
+}
+
 .tableBody {
   overflow-y: scroll;
   max-height: 380px;
@@ -14,4 +18,8 @@
 
 .userScore {
   padding: 1rem 0;
+}
+
+.tableHeadline {
+  color: #f0d08b;
 }
