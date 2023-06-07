@@ -11,30 +11,27 @@ import { useNavigate } from "react-router-dom";
 
 const Character = () => {
   const navigate = useNavigate();
-  const { user, setUser, isLoggedIn } = useContext(AuthContext)
+  const { user, setUser } = useContext(AuthContext)
   const [cardLeft, setCardLeft] = useState(null);
   const [cardRight, setCardRight] = useState(null);
   const [room, setRoom] = useState("");
+  const [allAboard, setAllAboard] = useState(false);
+  const [usernames, setUsernames] = useState(null);
+  const [message, setMessage] = useState("");
 
   const character = [
     { id: 1, img: knight, name: "Knight", feature: "sword", health: "100/100" },
     { id: 2, img: mage, name: "Mage", feature: "staff", health: "100/100" },
   ];
-  const characterString = ["knight", "mage"];
+  const characterString = ["", "knight", "mage"];
 
-  function onGetUserNum(data) {
-    const { num, id } = data;
-    if (id === user.id) {
-      user.num = num;
-      setUser((prev) => {
-        return {...prev, num: num}
-      });
-    }
+  function joinRoom() {
+    userSocket.emit("joinRoom", {userId: user.id, username: user.username, room: room});
   }
 
   function selectCard (cardId, right) {
     if ((right && user.num === 1) || (!right && user.num === 0)) {
-      userSocket.emit("updateRole", {cardId: cardId, right: right});
+      userSocket.emit("updateRole", {cardId: cardId, right: right, room: room});
     }
   };
 
@@ -47,42 +44,58 @@ const Character = () => {
     }
   }
 
-  function onChange(e) {
-    userSocket.emit("updateRoom", (e.target.value));
-  };
+  function onJoinRoom(data) {
+    const { num, message, userId } = data;
 
-  function onUpdateRoom(data) {
-    setRoom(data);
+    if (userId === user.id) {
+      user.num = num;
+      setUser((prev) => {
+        return {...prev, num: num}
+      });
+    }
+
+    setMessage(message);
   }
 
-  useEffect(()=> {
-    if (!user || !user.id) return;
+  function onAllAboard(data) {
+    setTimeout(() => {
+      console.log("All Aboard!");
+      setAllAboard(true);
+      setUsernames(data);
+    }, 1000)
+  }
 
-    console.log("hi")
+  useEffect(() => {
+    if (!user || !user.id) return;
 
     userSocket.connect();
 
-    userSocket.emit("getUserNum", {id: user.id});
+    userSocket.emit("joinMyRoom", user.id);
 
-    userSocket.on("getUserNum", onGetUserNum);
-    userSocket.on("updateRole", onUpdateRole);
-    userSocket.on("updateRoom", onUpdateRoom);
+    userSocket.on("joinRoom", onJoinRoom);
+    userSocket.on("allAboard", onAllAboard);
+
     return () => {
       userSocket.disconnect();
     }
   }, [!!user])
 
-  console.log(cardLeft, cardRight);
+  useEffect(()=> {
+    if (!user || !user.id || !allAboard) return;
 
+    console.log(user);
+
+    userSocket.on("updateRole", onUpdateRole);
+  }, [!!user, allAboard])
 
   function submit() {
     if (!cardLeft || !cardRight || !room) return;
 
-    user.role = user.num === 0 ? characterString[cardLeft] : characterString[cardRight];
+    user.character = user.num === 0 ? characterString[cardLeft] : characterString[cardRight];
     user.room = room;
     setUser((prev) => {
       return {...prev,
-        role: prev.num === 0 ? characterString[cardLeft] : characterString[cardRight],
+        character: prev.num === 0 ? characterString[cardLeft] : characterString[cardRight],
         room: room
       }
     });
@@ -92,67 +105,75 @@ const Character = () => {
   return (
     <div>
       <Navbar />
-      <div id="character">
-        <div className="character-1">
-          <h4>Player 1</h4>
-          <div className="cards">
-            {character.map((char) => (
-              <div
-                className={`character-card ${
-                  cardLeft === char.id ? "selected" : ""
-                }`}
-                key={char.id}
-                onClick={() => selectCard(char.id, false)}
-              >
-                <Card>
-                  <img src={char.img} alt={char.name} />
-                </Card>
-                <h5>{char.name}</h5>
-                <p>Weapon: {char.feature}</p>
-                <p>Health: {char.health}</p>
-              </div>
-            ))}
+      <div id="characterSelect">
+        {allAboard ? 
+        <div id="character">
+          <div className="character-1">
+            <h4>{usernames[0]}</h4>
+            <div className="cards">
+              {character.map((char) => (
+                <div
+                  className={`character-card ${
+                    cardLeft === char.id ? "selected" : ""
+                  }`}
+                  key={char.id}
+                  onClick={() => selectCard(char.id, false)}
+                >
+                  <Card>
+                    <img src={char.img} alt={char.name} />
+                  </Card>
+                  <h5>{char.name}</h5>
+                  <p>Weapon: {char.feature}</p>
+                  <p>Health: {char.health}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="character-2">
+            <h4>{usernames[1]}</h4>
+            <div className="cards">
+              {character.map((char) => (
+                <div
+                  className={`character-card ${
+                    cardRight === char.id ? "selected" : ""
+                  }`}
+                  key={char.id}
+                  onClick={() => selectCard(char.id, true)}
+                >
+                  <Card>
+                    <img src={char.img} alt={char.name} />
+                  </Card>
+                  <h5>{char.name}</h5>
+                  <p>Weapon: {char.feature}</p>
+                  <p>Health: {char.health}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="input-btn">
+            <div className="link play" onClick={submit}>
+              Play
+            </div>
           </div>
         </div>
-        <div className="character-2">
-          <h4>Player 2</h4>
-          <div className="cards">
-            {character.map((char) => (
-              <div
-                className={`character-card ${
-                  cardRight === char.id ? "selected" : ""
-                }`}
-                key={char.id}
-                onClick={() => selectCard(char.id, true)}
-              >
-                <Card>
-                  <img src={char.img} alt={char.name} />
-                </Card>
-                <h5>{char.name}</h5>
-                <p>Weapon: {char.feature}</p>
-                <p>Health: {char.health}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="input-btn">
-          <div className="room">
-          <label style={{paddingRight: "1rem"}}>Set a room:</label>
+        :
+        <div className="room">
+          <label style={{paddingRight: "1rem"}}>Enter room name:</label>
           <input
             type="text"
             placeholder="Room"
             id="room"
-            onChange={onChange}
+            onChange={(e) => setRoom(e.target.value)}
             value={room}
           />
+          <div className="link" onClick={joinRoom}>
+            Join
           </div>
-          <div className="link play" onClick={submit}>
-            Play
-          </div>
+          <div id="serverMessage">{message}</div>
         </div>
-        
+        }
       </div>
-    </div>
+  </div>
   );
 };
 

@@ -91,13 +91,17 @@ function GamePage() {
       return updatedObjects;
     });
   };
+
+  console.log(playerStats);
     
   useEffect(()=> {
     if (!user || !user.id) return;
 
     gameSocket.connect();
 
-    const player = {id: user.id, username: user.username, type: user.role, action: "idle", score: 0, health: 100, position: { top: 275, left: 60 }, velocity: { x: 0, y: 0 }, direction: 1};
+    console.log(user);
+
+    const player = {id: user.id, username: user.username, type: user.character, action: "idle", score: 0, health: 100, position: { top: 275, left: 60 }, velocity: { x: 0, y: 0 }, direction: 1};
     if (user.num === 1) {
       player.position = {top: 220, left: 760};
       player.direction = -1;

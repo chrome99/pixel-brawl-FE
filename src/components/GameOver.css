@@ -8,6 +8,7 @@
   transition: top 0.5s ease, opacity 0.5s ease; /* Transition for top and opacity properties */
   text-align: center;
   text-shadow: 4px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
+  z-index: 1000;
 }
 
 .gameOver.visible {
