@@ -1,4 +1,4 @@
-.tableHead {
+.tableRow {
     display: grid;
     grid-template-columns: repeat(5, 1fr);;
     padding: 0.6rem 0;
@@ -7,6 +7,6 @@
     margin-top: 1.2rem;
 }
 
-.tableHead p {
+.tableRow p {
     text-align: center;
 }

@@ -3,7 +3,7 @@ import Navbar from '../components/Navbar';
 import { useParams } from "react-router-dom";
 import "../App.css"
 import "./category.css"
-import TableHead from '../components/ScoreTable/TableHead';
+import TableRow from '../components/ScoreTable/TableRow';
 
 
 const Category = () => {
@@ -22,7 +22,7 @@ const Category = () => {
             </h3>
           </header>
           {/* create a condition for each param */}
-          <TableHead />
+          <TableRow />
         </div>
       </div>
     </div>
