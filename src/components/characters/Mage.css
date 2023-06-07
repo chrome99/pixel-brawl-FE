@@ -30,6 +30,12 @@
   animation: hurtingAnimation_mage 1s steps(3) infinite;
 }
 
+.mage.dying {
+  background-image: url('../../assets/mage/Dead.png');
+  width: 128px;
+  animation: dyingAnimation_mage 1s steps(5) infinite;
+}
+
 @keyframes idleAnimation_mage {
     0% {
       background-position: 0px 0; /* Initial position of the sprite */
@@ -68,6 +74,15 @@
 @keyframes hurtingAnimation_mage {
   0% {
     background-position: 384px 0; /* Initial position of the sprite */
+  }
+  100% {
+    background-position: 0px 0; /* Adjust to the width of your sprite sheet */
+  }
+}
+
+@keyframes dyingAnimation_mage {
+  0% {
+    background-position: 640px 0; /* Initial position of the sprite */
   }
   100% {
     background-position: 0px 0; /* Adjust to the width of your sprite sheet */
