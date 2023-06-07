@@ -1,0 +1,25 @@
+.gameOver {
+  margin: 0 auto;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: -100px; /* Start the component higher up */
+  opacity: 0; /* Start with opacity 0 */
+  transition: top 0.5s ease, opacity 0.5s ease; /* Transition for top and opacity properties */
+  text-align: center;
+  text-shadow: 4px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
+}
+
+.gameOver.visible {
+    top: 250px; /* Move the component down to its final position */
+    opacity: 1; /* Fade-in effect */
+  }
+
+
+.gameOver h1 {
+    font-size: 3em;
+}
+
+.gameOver p {
+    font-size: 2em;
+}

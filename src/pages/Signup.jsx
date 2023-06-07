@@ -5,8 +5,9 @@ import "../App.css";
 
 
 
+
 const Signup = () => {
-  const { signup } = useContext(AuthContext)
+  const { signup, login } = useContext(AuthContext)
   
   const [formData, setFormData] = useState({
     username: "",
@@ -36,7 +37,9 @@ const Signup = () => {
          rePassword
        });
 
-       navigate("/login");
+      await login({email, password})
+
+       navigate("/character");
      } catch (err) {
        console.log(err);
      }

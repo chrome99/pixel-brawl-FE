@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { gameSocket } from '../../socket';
 import './Player.css';
 import './Mage.css';
 import './Knight.css';
@@ -23,7 +22,7 @@ const allKeys = [
   }
 ]
 
-function Player({stats, thisUser, otherPlayer, addCol, deleteCol, updateCol, updateStats}) {
+function Player({stats, thisUser, matchWinner, otherPlayer, addCol, deleteCol, updateCol, updateStats}) {
   const id = stats.id;
   const keys = allKeys[0];
   const borderKnight = {top: 200, bottom: 390, right: 850, left: 50}
@@ -95,7 +94,7 @@ function Player({stats, thisUser, otherPlayer, addCol, deleteCol, updateCol, upd
         }
         updateStats(id, "action", "attack");
         setTimeout(() => {
-          updateCol(`${id}-attack1`, -100, -100)
+          updateCol(`${id}-attack1`, -100, -200)
           updateStats(id, "action", "idle")
         }, 1000)
       }
@@ -122,7 +121,7 @@ function Player({stats, thisUser, otherPlayer, addCol, deleteCol, updateCol, upd
       }
     };
 
-    if (thisUser) {
+    if (thisUser && matchWinner === "") {
       document.addEventListener('keydown', handleKeyPress);
       document.addEventListener('keyup', handleKeyUp);
     }
@@ -138,7 +137,7 @@ function Player({stats, thisUser, otherPlayer, addCol, deleteCol, updateCol, upd
     if (!otherPlayer) return;
 
     const actorCol = {top: -100, left: -100, width: 60, height: 50, id: `${id}-col`, type: "actor"};
-    const attackCol = {top: -100, left: -100, width: 100, height: 30, id:`${id}-attack1`, type: "attack", target: `${otherPlayer}-col`};
+    const attackCol = {top: -100, left: -200, width: 100, height: 30, id:`${id}-attack1`, type: "attack", target: `${otherPlayer}-col`};
     addCol(actorCol);
     addCol(attackCol);
 
@@ -175,6 +174,7 @@ function Player({stats, thisUser, otherPlayer, addCol, deleteCol, updateCol, upd
     ${stats.action === "attack" ? 'attacking' : ""}
     ${stats.action === "jump" ? 'jumping' : ""}
     ${stats.action === "hurt" ? 'hurting' : ""}
+    ${stats.action === "dying" ? 'dying' : ""}
     `}
       style={{
         transform: `scaleX(${stats.direction})`,
