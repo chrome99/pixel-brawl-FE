@@ -1,27 +1,93 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import "../App.css";
 import { Link } from "react-router-dom";
 import Card from "../components/Card/Card";
 import knight from "../assets/knight/knight.png";
 import mage from "../assets/mage/mage.png";
+import { userSocket } from "../socket";
+import { AuthContext } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Character = () => {
-  const [selectedCard, setSelectedCard] = useState(null);
+  const navigate = useNavigate();
+  const { user, setUser, isLoggedIn } = useContext(AuthContext)
+  const [cardLeft, setCardLeft] = useState(null);
+  const [cardRight, setCardRight] = useState(null);
   const [room, setRoom] = useState("");
 
   const character = [
     { id: 1, img: knight, name: "Knight", feature: "sword", health: "100/100" },
     { id: 2, img: mage, name: "Mage", feature: "staff", health: "100/100" },
   ];
+  const characterString = ["knight", "mage"];
 
-  const selectCard = (cardId) => {
-    setSelectedCard(cardId);
+  function onGetUserNum(data) {
+    const { num, id } = data;
+    if (id === user.id) {
+      user.num = num;
+      setUser((prev) => {
+        return {...prev, num: num}
+      });
+    }
+  }
+
+  function selectCard (cardId, right) {
+    if ((right && user.num === 1) || (!right && user.num === 0)) {
+      userSocket.emit("updateRole", {cardId: cardId, right: right});
+    }
   };
 
-  const onChange = (e) => {
-    setRoom(e.target.value);
+  function onUpdateRole(data) {
+    const { cardId, right } = data;
+    if (right) {
+      setCardRight(cardId);
+    } else {
+      setCardLeft(cardId);
+    }
+  }
+
+  function onChange(e) {
+    userSocket.emit("updateRoom", (e.target.value));
   };
+
+  function onUpdateRoom(data) {
+    setRoom(data);
+  }
+
+  useEffect(()=> {
+    if (!user || !user.id) return;
+
+    console.log("hi")
+
+    userSocket.connect();
+
+    userSocket.emit("getUserNum", {id: user.id});
+
+    userSocket.on("getUserNum", onGetUserNum);
+    userSocket.on("updateRole", onUpdateRole);
+    userSocket.on("updateRoom", onUpdateRoom);
+    return () => {
+      userSocket.disconnect();
+    }
+  }, [!!user])
+
+  console.log(cardLeft, cardRight);
+
+
+  function submit() {
+    if (!cardLeft || !cardRight || !room) return;
+
+    user.role = user.num === 0 ? characterString[cardLeft] : characterString[cardRight];
+    user.room = room;
+    setUser((prev) => {
+      return {...prev,
+        role: prev.num === 0 ? characterString[cardLeft] : characterString[cardRight],
+        room: room
+      }
+    });
+    navigate("/");
+  }
 
   return (
     <div>
@@ -33,10 +99,10 @@ const Character = () => {
             {character.map((char) => (
               <div
                 className={`character-card ${
-                  selectedCard === char.id ? "selected" : ""
+                  cardLeft === char.id ? "selected" : ""
                 }`}
                 key={char.id}
-                onClick={() => selectCard(char.id)}
+                onClick={() => selectCard(char.id, false)}
               >
                 <Card>
                   <img src={char.img} alt={char.name} />
@@ -54,10 +120,10 @@ const Character = () => {
             {character.map((char) => (
               <div
                 className={`character-card ${
-                  selectedCard === char.id ? "selected" : ""
+                  cardRight === char.id ? "selected" : ""
                 }`}
                 key={char.id}
-                onClick={() => selectCard(char.id)}
+                onClick={() => selectCard(char.id, true)}
               >
                 <Card>
                   <img src={char.img} alt={char.name} />
@@ -80,9 +146,9 @@ const Character = () => {
             value={room}
           />
           </div>
-          <Link className="link play" to="/">
+          <div className="link play" onClick={submit}>
             Play
-          </Link>
+          </div>
         </div>
         
       </div>

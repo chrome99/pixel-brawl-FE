@@ -9,13 +9,8 @@ import Navbar from '../components/Navbar';
 import { useNavigate } from 'react-router-dom';
 import { postScore } from '../services/scoreServices';
 import GameOver from "../components/GameOver"
-// {id: user.id, type: "knight", action: "idle", health: 100, position: { top: 275, left: 60 }, velocity: { x: 0, y: 0 }, direction: 1}
-  // {id: "player1", num: 1, type: "mage", action: "idle", health: 100, position: { top: 220, left: 760 }, velocity: { x: 0, y: 0 }, direction: -1}
-
-
 
 function GamePage() {
-  const room = "hello";
   const { user } = useContext(AuthContext)
   const [playerStats, setPlayerStats] = useState([]);
   const [colObjects, setColObjects] = useState([]);
@@ -23,7 +18,7 @@ function GamePage() {
   const navigate = useNavigate();
 
   function matchWon(winnerName) {
-    gameSocket.emit("matchWon", {winnerName: winnerName, room: room});
+    gameSocket.emit("matchWon", {winnerName: winnerName, room: user.room});
   }
 
   function onMatchWon(winnerName) {
@@ -31,21 +26,11 @@ function GamePage() {
   }
 
   function updateStats(id, field, newValue) {
-    gameSocket.emit("updatedPlayer", {player: {id, field, newValue}, room: room});
+    gameSocket.emit("updatedPlayer", {player: {id, field, newValue}, room: user.room});
   }
 
   function onGetAllPlayer(data) {
     const players = Object.values(data.players);
-    players.forEach((player) => {
-      if (player.num === 0) {
-        player.position = { top: 275, left: 60 };
-      }
-      else {
-        player.position = {top: 220, left: 760};
-        player.direction = -1;
-        player.type = "mage";
-      }
-    })
     setPlayerStats(players);
   }
 
@@ -73,15 +58,15 @@ function GamePage() {
 
 
   function addCol(newCol) {
-    gameSocket.emit("getAllCol", {col: newCol, room: room});
+    gameSocket.emit("getAllCol", {col: newCol, room: user.room});
   };
 
   function deleteCol(colId) {
-    gameSocket.emit("deleteCol", {colId: colId, room: room});
+    gameSocket.emit("deleteCol", {colId: colId, room: user.room});
   }
 
   function updateCol(colId, top, left) {
-    gameSocket.emit("updateCol", {colId: colId, top: top, left: left, room: room});
+    gameSocket.emit("updateCol", {colId: colId, top: top, left: left, room: user.room});
   };
 
   function onGetAllCol(allCol) {
@@ -110,11 +95,15 @@ function GamePage() {
   useEffect(()=> {
     if (!user || !user.id) return;
 
-    gameSocket.connect() 
+    gameSocket.connect();
 
-    const player = {id: user.id, username: user.username, type: "knight", action: "idle", score: 0, health: 100, position: { top: 275, left: 60 }, velocity: { x: 0, y: 0 }, direction: 1};
-    gameSocket.emit("joinRoom", room);
-    gameSocket.emit("getAllPlayers", {player: player, room: room});
+    const player = {id: user.id, username: user.username, type: user.role, action: "idle", score: 0, health: 100, position: { top: 275, left: 60 }, velocity: { x: 0, y: 0 }, direction: 1};
+    if (user.num === 1) {
+      player.position = {top: 220, left: 760};
+      player.direction = -1;
+    }
+    gameSocket.emit("joinRoom", user.room);
+    gameSocket.emit("getAllPlayers", {player: player, room: user.room});
 
     gameSocket.on("getAllPlayers", onGetAllPlayer);
     gameSocket.on("updatedPlayer", onUpdatedPlayer);
@@ -148,14 +137,6 @@ function GamePage() {
       navigate("/character");
     }, 5000);
   }, [matchWinner])
-
-
-  const knight = () => {
-    return <Player type={'knight'} num={0} initPosition={{ top: 275, left: 60 }} initDirection={1} addCol={addCol} deleteCol={deleteCol} updateCol={updateCol} playerStats={playerStats} updateStats={updateStats} />
-  }
-  const mage = () => {
-    return <Player type={'mage'} num={1} initPosition={{ top: 220, left: 760 }} initDirection={-1} addCol={addCol} deleteCol={deleteCol} updateCol={updateCol} playerStats={playerStats} updateStats={updateStats} />
-  }  
 
   return (
     <div>

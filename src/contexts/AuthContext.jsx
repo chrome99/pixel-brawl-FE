@@ -45,7 +45,7 @@ const AuthContextProvider = ({ children }) => {
 
   const login = async (user) => {
     try {
-      const data = userServices.login(user);
+      const data = await userServices.login(user);
       if (data) {
         setIsLoggedIn(true);
         resetUser(data);
@@ -68,7 +68,7 @@ const AuthContextProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, logout, login, signup, isLoggedIn }}>
+    <AuthContext.Provider value={{ user, setUser, isLoading, logout, login, signup, isLoggedIn }}>
       {children}
     </AuthContext.Provider>
   );
