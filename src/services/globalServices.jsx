@@ -1,4 +1,4 @@
-export const baseURL = `http://localhost:8080`
+export const baseURL = process.env.NODE_ENV === "development" ? "http://localhost:8080" : "https://pixel-brawl.herokuapp.com";
 
 export function colOverlap(rect1, rect2) {
     // Calculate the right and bottom coordinates of the rectangles

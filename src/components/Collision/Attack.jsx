@@ -11,7 +11,7 @@ function Attack({col, colObjects, matchWon, playerStats, updateStats}) {
       setProjected(targetCol);
       const result = colOverlap(col, targetCol);
       if (result) {
-        const max = 80, min = 60;
+        const max = 20, min = 10;
         const randomDamge = Math.floor(Math.random() * (max - min + 1) + min);
 
         const originPlayerId = col.target.split("-")[0];
