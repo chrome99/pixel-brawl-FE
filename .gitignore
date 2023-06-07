@@ -8,3 +8,5 @@
 
 # misc
 .env
+# Local Netlify folder
+.netlify
