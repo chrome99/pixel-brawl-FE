@@ -15,14 +15,12 @@ function GamePage() {
   const [colObjects, setColObjects] = useState([]);
 
   function updateStats(id, field, newValue) {
-    console.log("updateStats id: ", id);
     gameSocket.emit("updatedPlayer", {player: {id, field, newValue}, room: room});
   }
 
   function onGetAllPlayer(data) {
     const players = Object.values(data.players);
     players.forEach((player) => {
-      console.log(player.num);
       if (player.num === 0) {
         player.position = { top: 275, left: 60 };
       }
@@ -50,7 +48,6 @@ function GamePage() {
   }
 
   function onRemovedPlayer(data) {
-    console.log("removing player")
     const { playerId } = data;
     setPlayerStats(prev => {
       const updatedStats = prev.filter(stats => stats.id === playerId);
@@ -59,6 +56,11 @@ function GamePage() {
   }
 
   function takeDamage(statsId, damage) {
+    gameSocket.emit("takeDamage", {statsId: statsId, damage: damage, room: room});
+  }
+
+  function onTakeDamage(data) {
+    const {statsId, damage} = data;
     setPlayerStats(prev => {
       const updatedStats = prev.map(stats => {
         if (stats.id === statsId) {
@@ -71,15 +73,30 @@ function GamePage() {
     });
   }
 
+
   function addCol(newCol) {
-    setColObjects(prev => [...prev, newCol]);
+    gameSocket.emit("getAllCol", {col: newCol, room: room});
   };
 
   function deleteCol(colId) {
+    gameSocket.emit("deleteCol", {colId: colId, room: room});
+  }
+
+  function updateCol(colId, top, left) {
+    gameSocket.emit("updateCol", {colId: colId, top: top, left: left, room: room});
+  };
+
+  function onGetAllCol(allCol) {
+    const newColObjects = Object.values(allCol);
+    setColObjects(newColObjects);
+  };
+
+  function onDeleteCol(colId) {
     setColObjects(prev => prev.filter(col => col.id !== colId));
   }
 
-  function updateColPosition(colId, top, left) {
+  function onUpdateCol(data) {
+    const { colId, top, left } = data;
     setColObjects(prev => {
       const updatedObjects = prev.map(col => {
         if (col.id === colId) {
@@ -103,6 +120,11 @@ function GamePage() {
 
     gameSocket.on("getAllPlayers", onGetAllPlayer);
     gameSocket.on("updatedPlayer", onUpdatedPlayer);
+    gameSocket.on("takeDamage", onTakeDamage);
+
+    gameSocket.on("getAllCol", onGetAllCol);
+    gameSocket.on("deleteCol", onDeleteCol);
+    gameSocket.on("updateCol", onUpdateCol);
     return () => {
       gameSocket.disconnect();
     }
@@ -110,24 +132,25 @@ function GamePage() {
 
 
   const knight = () => {
-    return <Player type={'knight'} num={0} initPosition={{ top: 275, left: 60 }} initDirection={1} addCol={addCol} deleteCol={deleteCol} updateColPosition={updateColPosition} playerStats={playerStats} updateStats={updateStats} />
+    return <Player type={'knight'} num={0} initPosition={{ top: 275, left: 60 }} initDirection={1} addCol={addCol} deleteCol={deleteCol} updateCol={updateCol} playerStats={playerStats} updateStats={updateStats} />
   }
   const mage = () => {
-    return <Player type={'mage'} num={1} initPosition={{ top: 220, left: 760 }} initDirection={-1} addCol={addCol} deleteCol={deleteCol} updateColPosition={updateColPosition} playerStats={playerStats} updateStats={updateStats} />
-  }
-  
+    return <Player type={'mage'} num={1} initPosition={{ top: 220, left: 760 }} initDirection={-1} addCol={addCol} deleteCol={deleteCol} updateCol={updateCol} playerStats={playerStats} updateStats={updateStats} />
+  }  
 
   return (
     <div id="game">
       {playerStats.length > 0 ? playerStats.map((p, i) => {
         const barPosition = i === 0 ? {top: 0, left: 0} : {top: 0, right: 0};
         const stats = playerStats.find((player) => player.id === p.id);
-        return (<>
+        const otherPlayer = playerStats.length !== 2 ? undefined : i === 0 ? playerStats[1].id : playerStats[0].id;
+        return (
+        <>
           <HealthBar key={stats.id + "-healthbar" + i} color={"red"} precentage={stats.health} position={barPosition}/>
-          <Player thisUser={stats.id === user.id} key={stats.id} stats={stats} updateStats={updateStats} addCol={addCol} deleteCol={deleteCol} updateColPosition={updateColPosition} />
+          <Player thisUser={stats.id === user.id} key={stats.id} otherPlayer={otherPlayer} stats={stats} updateStats={updateStats} addCol={addCol} deleteCol={deleteCol} updateCol={updateCol} />
         </>)
       }): ""}
-      {/* {colObjects.map((col) => {
+      {colObjects.length > 0 ? colObjects.map((col) => {
         switch (col.type) {
           case "actor":
             return <Actor key={col.id} col={col} colObjects={colObjects} updateStats={updateStats}/>
@@ -136,7 +159,7 @@ function GamePage() {
           default:
             return "";
         }
-      })} */}
+      }): ""}
     </div>
   );
   

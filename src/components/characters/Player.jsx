@@ -23,7 +23,7 @@ const allKeys = [
   }
 ]
 
-function Player({stats, thisUser, addCol, deleteCol, updateColPosition, updateStats}) {
+function Player({stats, thisUser, otherPlayer, addCol, deleteCol, updateCol, updateStats}) {
   const id = stats.id;
   const keys = allKeys[0];
   const borderKnight = {top: 200, bottom: 390, right: 850, left: 50}
@@ -87,15 +87,15 @@ function Player({stats, thisUser, addCol, deleteCol, updateColPosition, updateSt
         let newLeft;
         if (stats.type === "knight") {
           newLeft = stats.direction === 1 ? stats.position.left + 50: stats.position.left - 110;
-          updateColPosition(`${id}-attack1`, stats.position.top + 110, newLeft);
+          updateCol(`${id}-attack1`, stats.position.top + 110, newLeft);
         }
         else if (stats.type === "mage") {
           newLeft = stats.direction === 1 ? stats.position.left + 90: stats.position.left - 70;
-        updateColPosition(`${id}-attack1`, stats.position.top + 160, newLeft);
+        updateCol(`${id}-attack1`, stats.position.top + 160, newLeft);
         }
         updateStats(id, "action", "attack");
         setTimeout(() => {
-          updateColPosition(`${id}-attack1`, -100, -100)
+          updateCol(`${id}-attack1`, -100, -100)
           updateStats(id, "action", "idle")
         }, 1000)
       }
@@ -135,17 +135,18 @@ function Player({stats, thisUser, addCol, deleteCol, updateColPosition, updateSt
 
   //initialize player
   useEffect(() => {
-    const otherPlayerNum = stats.num === 1 ? 0 : 1;
-    const actorCol = {top: -100, left: -100, width: 60, height: 50, id: id, type: "actor"};
-    const attackCol = {top: -100, left: -100, width: 100, height: 30, id:`${id}-attack1`, type: "attack", target: `player${otherPlayerNum}`};
+    if (!otherPlayer) return;
+
+    const actorCol = {top: -100, left: -100, width: 60, height: 50, id: `${id}-col`, type: "actor"};
+    const attackCol = {top: -100, left: -100, width: 100, height: 30, id:`${id}-attack1`, type: "attack", target: `${otherPlayer}-col`};
     addCol(actorCol);
     addCol(attackCol);
 
     return () => {
-      deleteCol(id);
+      deleteCol(`${id}-col`);
       deleteCol(`${id}-attack1`);
     }
-  }, [])
+  }, [otherPlayer])
 
   useEffect(() => {
     function updatePosition() {
@@ -159,10 +160,10 @@ function Player({stats, thisUser, addCol, deleteCol, updateColPosition, updateSt
 
   useEffect(() => {
     if (stats.type === "knight") {
-      updateColPosition(`${id}`, stats.position.top + 100, stats.position.left - 10)
+      updateCol(`${id}-col`, stats.position.top + 100, stats.position.left - 10)
     }
     else if (stats.type === "mage") {
-      updateColPosition(`${id}`, stats.position.top + 150, stats.position.left + 30)
+      updateCol(`${id}-col`, stats.position.top + 150, stats.position.left + 30)
     }
   }, [stats.position])
 
