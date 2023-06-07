@@ -1,20 +1,35 @@
 .healthBarContainer {
-    position: absolute;
-    /* height: 20px; */
-    width: 45%;
-    background-color: #212f3c;
-    border-radius: 50px;
-    border: 2px dashed gold;
-    margin: 1rem;
+  position: absolute;
+  width: 45%;
 }
+
+.healthBarContainer p {
+  margin: 0 1rem;
+}
+
+.healthBarContainer p.right {
+  text-align: right;
+}
+
+.healthBarContainer p.left {
+  text-align: left;
+}
+
+.healthBarWrapper {
+  background-color: #212f3c;
+  border-radius: 50px;
+  border: 2px dashed gold;
+  margin: 0rem 1rem;
+}
+
 .healthBarFiller {
-    height: 100%;
-    border-radius: 1rem;
-    text-align: center;
-    transition: width 0.5s ease-in-out;
-    padding: 0.2rem;
+  height: 100%;
+  border-radius: 1rem;
+  text-align: center;
+  transition: width 0.5s ease-in-out;
+  padding: 0.2rem;
 }
 .healthBarLabel {
-    color: white;
-    font-weight: bold;
+  color: white;
+  font-weight: bold;
 }
