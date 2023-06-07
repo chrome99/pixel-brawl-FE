@@ -2,7 +2,6 @@
     scale: 2;
     position: absolute;
 }
-.hurting {
-  filter: invert(100%);
+.dying {
+    filter: grayscale(1);
 }
-

@@ -14,6 +14,15 @@ function GamePage() {
   const { user } = useContext(AuthContext)
   const [playerStats, setPlayerStats] = useState([]);
   const [colObjects, setColObjects] = useState([]);
+  const [matchWinner, setMatchWinner] = useState("");
+
+  function matchWon(winnerName) {
+    gameSocket.emit("matchWon", {winnerName: winnerName, room: room});
+  }
+
+  function onMatchWon(winnerName) {
+    setMatchWinner(winnerName);
+  }
 
   function updateStats(id, field, newValue) {
     gameSocket.emit("updatedPlayer", {player: {id, field, newValue}, room: room});
@@ -52,24 +61,6 @@ function GamePage() {
     const { playerId } = data;
     setPlayerStats(prev => {
       const updatedStats = prev.filter(stats => stats.id === playerId);
-      return updatedStats;
-    });
-  }
-
-  function takeDamage(statsId, damage) {
-    gameSocket.emit("takeDamage", {statsId: statsId, damage: damage, room: room});
-  }
-
-  function onTakeDamage(data) {
-    const {statsId, damage} = data;
-    setPlayerStats(prev => {
-      const updatedStats = prev.map(stats => {
-        if (stats.id === statsId) {
-          return { ...stats, health: stats.health - damage};
-        }
-        return stats;
-      });
-
       return updatedStats;
     });
   }
@@ -115,17 +106,18 @@ function GamePage() {
 
     gameSocket.connect() 
 
-    const player = {id: user.id, type: "knight", action: "idle", health: 100, position: { top: 275, left: 60 }, velocity: { x: 0, y: 0 }, direction: 1};
+    const player = {id: user.id, username: user.username, type: "knight", action: "idle", score: 0, health: 100, position: { top: 275, left: 60 }, velocity: { x: 0, y: 0 }, direction: 1};
     gameSocket.emit("joinRoom", room);
     gameSocket.emit("getAllPlayers", {player: player, room: room});
 
     gameSocket.on("getAllPlayers", onGetAllPlayer);
     gameSocket.on("updatedPlayer", onUpdatedPlayer);
-    gameSocket.on("takeDamage", onTakeDamage);
 
     gameSocket.on("getAllCol", onGetAllCol);
     gameSocket.on("deleteCol", onDeleteCol);
     gameSocket.on("updateCol", onUpdateCol);
+
+    gameSocket.on("matchWon", onMatchWon);
     return () => {
       gameSocket.disconnect();
     }
@@ -143,14 +135,16 @@ function GamePage() {
     <div>
       <Navbar />
       <div id="game">
+        {matchWinner === "" ? "" : <div style={{fontSize: "5rem"}}>{matchWinner}</div>}
         {playerStats.length > 0 ? playerStats.map((p, i) => {
           const barPosition = i === 0 ? {top: 0, left: 0} : {top: 0, right: 0};
           const stats = playerStats.find((player) => player.id === p.id);
           const otherPlayer = playerStats.length !== 2 ? undefined : i === 0 ? playerStats[1].id : playerStats[0].id;
           return (
           <>
+            <div>{stats.score}</div>
             <HealthBar key={stats.id + "-healthbar" + i} color={"red"} precentage={stats.health} position={barPosition}/>
-            <Player thisUser={stats.id === user.id} key={stats.id} otherPlayer={otherPlayer} stats={stats} updateStats={updateStats} addCol={addCol} deleteCol={deleteCol} updateCol={updateCol} />
+            <Player thisUser={stats.id === user.id} matchWinner={matchWinner} username={user.username} key={stats.id} otherPlayer={otherPlayer} stats={stats} updateStats={updateStats} addCol={addCol} deleteCol={deleteCol} updateCol={updateCol} />
           </>)
         }): ""}
         {colObjects.length > 0 ? colObjects.map((col) => {
@@ -158,7 +152,7 @@ function GamePage() {
             case "actor":
               return <Actor key={col.id} col={col} colObjects={colObjects} updateStats={updateStats}/>
             case "attack":
-              return <Attack key={col.id} col={col} colObjects={colObjects} updateStats={updateStats} takeDamage={takeDamage}/>
+              return <Attack key={col.id} col={col} colObjects={colObjects} matchWon={matchWon} playerStats={playerStats} updateStats={updateStats} />
             default:
               return "";
           }
