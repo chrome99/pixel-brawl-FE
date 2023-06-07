@@ -7,7 +7,7 @@ import Login from './pages/Login';
 import { AuthContextProvider } from './contexts/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
 import Character from './pages/Character';
-import Scores from './pages/Scores';
+import Category from './pages/Category';
 
 
 function App () {
@@ -17,7 +17,7 @@ function App () {
           <Route path="/" element={<PrivateRoute />}>
             <Route index path="/" element={<GamePage />} />
             <Route path="/character" element={<Character />} /> 
-            <Route path="/scores" element={<Scores />} /> 
+            <Route path="/category/:categoryName" element={<Category />} /> 
           </Route>
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />

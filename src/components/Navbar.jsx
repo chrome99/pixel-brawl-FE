@@ -24,16 +24,25 @@ const Navbar = () => {
   
   return (
     <div id="navbar">
-      {location.pathname === "/scores" ? (
-        <Link className="link" to="/character" >
-          Characters
-        </Link>
+      {location.pathname === "/scores" ||
+      location.pathname.startsWith("/category/") ? (
+        <div>
+          <Link className="link matches" to="/category/scores">
+            Scores
+          </Link>
+          <Link className="link matches" to="/category/user-scores">
+            My Scores
+          </Link>
+          <Link className="link char" to="/character">
+            Play
+          </Link>
+        </div>
       ) : (
-        <Link className="link" to="/scores" >
+        <Link className="link" to="/category/scores">
           Scores
-        </Link> 
+        </Link>
       )}
-      <Link className="link" style={{color: "#fff"}} onClick={handleLogout}>
+      <Link className="link" style={{ color: "#fff" }} onClick={handleLogout}>
         Logout
       </Link>
     </div>
