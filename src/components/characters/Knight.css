@@ -18,6 +18,12 @@
   animation: attackingAnimation_knight 0.8s steps(5) infinite;
 }
 
+.knight.attacking_02 {
+  background-image: url("../../assets/knight/Attack_2.png");
+  width: 100px;
+  animation: attacking_02Animation_knight 0.8s steps(4) infinite;
+}
+
 .knight.jumping {
   background-image: url("../../assets/knight/Jump.png");
   width: 86px;
@@ -32,7 +38,7 @@
 
 .knight.dying {
   background-image: url("../../assets/knight/Dead.png");
-  width: 78.1px;
+  width: 100px;
   animation: dyingAnimation_knight 1s steps(6) infinite;
 }
 
@@ -62,6 +68,15 @@
   }
 }
 
+@keyframes attacking_02Animation_knight {
+  0% {
+    background-position: 400px 0; /* Initial position of the sprite */
+  }
+  100% {
+    background-position: 0px 0; /* Adjust to the width of your sprite sheet */
+  }
+}
+
 @keyframes jumpingAnimation_knight {
   0% {
     background-position: 480px 0; /* Initial position of the sprite */
@@ -82,7 +97,7 @@
 
 @keyframes dyingAnimation_knight {
   0% {
-    background-position: 120px 0; /* Initial position of the sprite */
+    background-position: 600px 0; /* Initial position of the sprite */
   }
   100% {
     background-position: 0px 0; /* Adjust to the width of your sprite sheet */

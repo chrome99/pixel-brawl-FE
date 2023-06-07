@@ -18,6 +18,12 @@
   animation: attackingAnimation_mage 1s steps(10) infinite;
 }
 
+.mage.attacking_02 {
+  background-image: url('../../assets/mage/Attack_1.png');
+  width: 128px;
+  animation: attacking_02Animation_mage 1s steps(12) infinite;
+}
+
 .mage.jumping {
   background-image: url('../../assets/mage/Jump.png');
   width: 128px;
@@ -56,6 +62,15 @@
 @keyframes attackingAnimation_mage {
   0% {
     background-position: 1280px 0; /* Initial position of the sprite */
+  }
+  100% {
+    background-position: 0px 0; /* Adjust to the width of your sprite sheet */
+  }
+}
+
+@keyframes attacking_02Animation_mage {
+  0% {
+    background-position: 1664px 0; /* Initial position of the sprite */
   }
   100% {
     background-position: 0px 0; /* Adjust to the width of your sprite sheet */
