@@ -59,7 +59,6 @@ const Character = () => {
 
   function onAllAboard(data) {
     setTimeout(() => {
-      console.log("All Aboard!");
       setAllAboard(true);
       setUsernames(data);
     }, 1000)
@@ -82,8 +81,6 @@ const Character = () => {
 
   useEffect(()=> {
     if (!user || !user.id || !allAboard) return;
-
-    console.log(user);
 
     userSocket.on("updateRole", onUpdateRole);
   }, [!!user, allAboard])
