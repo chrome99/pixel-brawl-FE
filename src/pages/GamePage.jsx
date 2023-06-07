@@ -167,8 +167,7 @@ function GamePage() {
           const otherPlayer = playerStats.length !== 2 ? undefined : i === 0 ? playerStats[1].id : playerStats[0].id;
           return (
           <>
-            {/* <div>{stats.score}</div> */}
-            <HealthBar key={stats.id + "-healthbar" + i} precentage={stats.health} position={barPosition} username={user.username} score={stats.score}/>
+            <HealthBar key={stats.id + "-healthbar" + i} precentage={stats.health} position={barPosition} username={stats.username} score={stats.score}/>
             <Player thisUser={stats.id === user.id} matchWinner={matchWinner} username={stats.username} key={stats.id} otherPlayer={otherPlayer} stats={stats} updateStats={updateStats} addCol={addCol} deleteCol={deleteCol} updateCol={updateCol} />
           </>)
         }): ""}
