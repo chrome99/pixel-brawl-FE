@@ -7,6 +7,7 @@ import HealthBar from '../components/HealthBar';
 import { AuthContext } from '../contexts/AuthContext';
 import Navbar from '../components/Navbar';
 import { useNavigate } from 'react-router-dom';
+import { postScore } from '../services/scoreServices';
 // {id: user.id, type: "knight", action: "idle", health: 100, position: { top: 275, left: 60 }, velocity: { x: 0, y: 0 }, direction: 1}
   // {id: "player1", num: 1, type: "mage", action: "idle", health: 100, position: { top: 220, left: 760 }, velocity: { x: 0, y: 0 }, direction: -1}
 
@@ -128,8 +129,20 @@ function GamePage() {
   useEffect(() => {
     if (matchWinner === "") return;
 
+    async function updateServerScore() {
+      const newScore = {
+        player1: playerStats[0].username,
+        player2: playerStats[1].username,
+        player1Score: playerStats[0].score,
+        player2Score: playerStats[1].score
+      };
+      console.log(newScore);
+      await postScore(newScore);
+    }
+    updateServerScore();
+
     setTimeout(() => {
-      // navigate("/character");
+      navigate("/character");
     }, 5000);
   }, [matchWinner])
 
