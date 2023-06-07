@@ -39,7 +39,7 @@
 .mage.dying {
   background-image: url('../../assets/mage/Dead.png');
   width: 128px;
-  animation: dyingAnimation_mage 1s steps(5) infinite;
+  animation: dyingAnimation_mage 5s steps(5);
 }
 
 @keyframes idleAnimation_mage {
@@ -99,7 +99,13 @@
   0% {
     background-position: 640px 0; /* Initial position of the sprite */
   }
-  100% {
+  40% {
     background-position: 0px 0; /* Adjust to the width of your sprite sheet */
+  }
+  60% {
+    background-position: 0px 0; /* Adjust to the width of your sprite sheet */
+  }
+  100% {
+    background-position: 640px 0; /* Adjust to the width of your sprite sheet */
   }
 }

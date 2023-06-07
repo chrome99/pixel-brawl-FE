@@ -6,6 +6,7 @@ import Player from '../components/characters/Player';
 import HealthBar from '../components/HealthBar';
 import { AuthContext } from '../contexts/AuthContext';
 import Navbar from '../components/Navbar';
+import { useNavigate } from 'react-router-dom';
 // {id: user.id, type: "knight", action: "idle", health: 100, position: { top: 275, left: 60 }, velocity: { x: 0, y: 0 }, direction: 1}
   // {id: "player1", num: 1, type: "mage", action: "idle", health: 100, position: { top: 220, left: 760 }, velocity: { x: 0, y: 0 }, direction: -1}
 
@@ -15,6 +16,7 @@ function GamePage() {
   const [playerStats, setPlayerStats] = useState([]);
   const [colObjects, setColObjects] = useState([]);
   const [matchWinner, setMatchWinner] = useState("");
+  const navigate = useNavigate();
 
   function matchWon(winnerName) {
     gameSocket.emit("matchWon", {winnerName: winnerName, room: room});
@@ -27,6 +29,16 @@ function GamePage() {
   function updateStats(id, field, newValue) {
     gameSocket.emit("updatedPlayer", {player: {id, field, newValue}, room: room});
   }
+
+  /*
+  todo:
+  add 2nd attack
+  integrate death animation
+  integrate character choice
+  after match won, setTimeout to navigate back to Character Choice
+
+  super extra: add local server
+  */
 
   function onGetAllPlayer(data) {
     const players = Object.values(data.players);
@@ -122,6 +134,14 @@ function GamePage() {
       gameSocket.disconnect();
     }
   }, [user])
+
+  useEffect(() => {
+    if (matchWinner === "") return;
+    
+    setTimeout(() => {
+      navigate("/character");
+    }, 5000);
+  }, [matchWinner])
 
 
   const knight = () => {

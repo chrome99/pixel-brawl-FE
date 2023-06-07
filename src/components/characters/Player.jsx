@@ -174,6 +174,7 @@ function Player({stats, thisUser, matchWinner, otherPlayer, addCol, deleteCol, u
     ${stats.action === "attack" ? 'attacking' : ""}
     ${stats.action === "jump" ? 'jumping' : ""}
     ${stats.action === "hurt" ? 'hurting' : ""}
+    ${stats.action === "dying" ? 'dying' : ""}
     `}
       style={{
         transform: `scaleX(${stats.direction})`,

@@ -32,7 +32,7 @@ function Attack({col, colObjects, matchWon, playerStats, updateStats}) {
             setTimeout(() => {
               updateStats(targetPlayerId, "health", "100");
               updateStats(targetPlayerId, "action", "idle");
-            }, 1000)
+            }, 2000)
           }
         }
         else {
