@@ -48,7 +48,7 @@ const Login = () => {
             onChange={onChange}
           />
           <button className="btn-block">LogIn</button>
-          <button className="btn-block" onClick={logout}>LogOut</button>
+          {/* <button className="btn-block" onClick={logout}>LogOut</button> */}
           <div>
             Need an account?
             <Link className="link" to={"/signup"}>

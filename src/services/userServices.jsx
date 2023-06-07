@@ -31,7 +31,7 @@ const login = async (userData) => {
 
 const logout = async () => {
   try {
-    const { data } = await axios.get(`${baseURL}/user/logout`);
+    const { data } = await axios.get(`${baseURL}/user/logout`, {withCredentials: true} );
     return data;
   } catch (err) {
     console.log(err);
