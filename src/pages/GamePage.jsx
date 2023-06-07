@@ -8,6 +8,7 @@ import { AuthContext } from '../contexts/AuthContext';
 import Navbar from '../components/Navbar';
 import { useNavigate } from 'react-router-dom';
 import { postScore } from '../services/scoreServices';
+import GameOver from "../components/GameOver"
 // {id: user.id, type: "knight", action: "idle", health: 100, position: { top: 275, left: 60 }, velocity: { x: 0, y: 0 }, direction: 1}
   // {id: "player1", num: 1, type: "mage", action: "idle", health: 100, position: { top: 220, left: 760 }, velocity: { x: 0, y: 0 }, direction: -1}
 
@@ -160,7 +161,7 @@ function GamePage() {
     <div>
       <Navbar />
       <div id="game">
-        {matchWinner === "" ? "" : <div style={{fontSize: "5rem"}}>{matchWinner}</div>}
+        {matchWinner && <GameOver {...{matchWinner}}/>} 
         {playerStats.length > 0 ? playerStats.map((p, i) => {
           const barPosition = i === 0 ? {top: 0, left: 0} : {top: 0, right: 0};
           const stats = playerStats.find((player) => player.id === p.id);
