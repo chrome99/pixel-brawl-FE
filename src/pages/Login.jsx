@@ -24,7 +24,7 @@ const Login = () => {
     e.preventDefault();
     try {
       await login(formData)
-      navigate("/")
+      navigate("/character")
     } catch (err) {
       console.log(err)
     }

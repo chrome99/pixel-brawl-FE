@@ -5,6 +5,7 @@ import { gameSocket } from '../socket';
 import Player from '../components/characters/Player';
 import HealthBar from '../components/HealthBar';
 import { AuthContext } from '../contexts/AuthContext';
+import Navbar from '../components/Navbar';
 // {id: user.id, type: "knight", action: "idle", health: 100, position: { top: 275, left: 60 }, velocity: { x: 0, y: 0 }, direction: 1}
   // {id: "player1", num: 1, type: "mage", action: "idle", health: 100, position: { top: 220, left: 760 }, velocity: { x: 0, y: 0 }, direction: -1}
 
@@ -139,27 +140,30 @@ function GamePage() {
   }  
 
   return (
-    <div id="game">
-      {playerStats.length > 0 ? playerStats.map((p, i) => {
-        const barPosition = i === 0 ? {top: 0, left: 0} : {top: 0, right: 0};
-        const stats = playerStats.find((player) => player.id === p.id);
-        const otherPlayer = playerStats.length !== 2 ? undefined : i === 0 ? playerStats[1].id : playerStats[0].id;
-        return (
-        <>
-          <HealthBar key={stats.id + "-healthbar" + i} color={"red"} precentage={stats.health} position={barPosition}/>
-          <Player thisUser={stats.id === user.id} key={stats.id} otherPlayer={otherPlayer} stats={stats} updateStats={updateStats} addCol={addCol} deleteCol={deleteCol} updateCol={updateCol} />
-        </>)
-      }): ""}
-      {colObjects.length > 0 ? colObjects.map((col) => {
-        switch (col.type) {
-          case "actor":
-            return <Actor key={col.id} col={col} colObjects={colObjects} updateStats={updateStats}/>
-          case "attack":
-            return <Attack key={col.id} col={col} colObjects={colObjects} updateStats={updateStats} takeDamage={takeDamage}/>
-          default:
-            return "";
-        }
-      }): ""}
+    <div>
+      <Navbar />
+      <div id="game">
+        {playerStats.length > 0 ? playerStats.map((p, i) => {
+          const barPosition = i === 0 ? {top: 0, left: 0} : {top: 0, right: 0};
+          const stats = playerStats.find((player) => player.id === p.id);
+          const otherPlayer = playerStats.length !== 2 ? undefined : i === 0 ? playerStats[1].id : playerStats[0].id;
+          return (
+          <>
+            <HealthBar key={stats.id + "-healthbar" + i} color={"red"} precentage={stats.health} position={barPosition}/>
+            <Player thisUser={stats.id === user.id} key={stats.id} otherPlayer={otherPlayer} stats={stats} updateStats={updateStats} addCol={addCol} deleteCol={deleteCol} updateCol={updateCol} />
+          </>)
+        }): ""}
+        {colObjects.length > 0 ? colObjects.map((col) => {
+          switch (col.type) {
+            case "actor":
+              return <Actor key={col.id} col={col} colObjects={colObjects} updateStats={updateStats}/>
+            case "attack":
+              return <Attack key={col.id} col={col} colObjects={colObjects} updateStats={updateStats} takeDamage={takeDamage}/>
+            default:
+              return "";
+          }
+        }): ""}
+      </div>
     </div>
   );
   
