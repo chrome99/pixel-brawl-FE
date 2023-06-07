@@ -19,7 +19,7 @@
 }
 
 .mage.attacking_02 {
-  background-image: url('../../assets/mage/Attack_1.png');
+  background-image: url('../../assets/mage/Attack_2.png');
   width: 128px;
   animation: attacking_02Animation_mage 1s steps(12) infinite;
 }
