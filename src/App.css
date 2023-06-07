@@ -27,7 +27,7 @@ body {
     display: flex;
     padding-bottom: 1rem;
     align-items: center;
-    justify-content: end;
+    justify-content: flex-end;
 }
 
 /* utility */
@@ -129,20 +129,32 @@ input {
 }
 
 .character-1, .character-2 {
-    border: 1px solid red;
-    height: 500px;
+    height: 450px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding: 1rem;
+}
+
+.character-2 {
+    border-left: 2px solid #fff;
+}
+
+.input-btn {
+    grid-column: 1 / span 2;
+    display: flex;
+    flex-direction: row;
+    justify-content:space-between;
+    align-items: center;
+    padding: 0 1rem;
 }
 
 .play {
-    border: 1px solid blue;
-    grid-column: 1 / span 2;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    font-size: 1.5rem;
 }
+
+
 
 /* scores page */
 
@@ -150,4 +162,47 @@ input {
     width: 960px;
     height: 540px;
     background-color: #333;
+}
+
+
+/* character card */
+.cards {
+    display: flex;
+    flex-direction: row;
+}
+
+.cards:hover {
+    cursor: pointer;
+}
+
+.character-card {
+    border: 2px solid black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0rem 0.7rem;
+    margin-top: 1.5rem;
+    height: auto;
+}
+
+.character-card p {
+    font-size: 12px;
+    padding: 0.5rem 0.2rem;
+}
+
+.room, input {
+    display: flex;
+    flex-direction: row;
+    margin-top: 1rem;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.room input {
+    width: 100px;
+    align-items: center;
+}
+
+.selected {
+    border: 1px solid #f0d08b;
 }

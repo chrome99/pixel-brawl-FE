@@ -1,0 +1,16 @@
+.card {
+  height: 200px;
+  width: 160px;
+  margin: 1rem;
+  background-image: url("../../assets/background/background_2.png");
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+}
+
+.card img {
+  height: 97%; 
+}
+

@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import "../App.css"; 
-import { logout } from "../services/userServices";
+
 
 const Login = () => {
   const { login } = useContext(AuthContext);
@@ -48,7 +48,6 @@ const Login = () => {
             onChange={onChange}
           />
           <button className="btn-block">LogIn</button>
-          <button className="btn-block" onClick={logout}>LogOut</button>
           <div>
             Need an account?
             <Link className="link" to={"/signup"}>
